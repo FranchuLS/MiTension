@@ -8,5 +8,11 @@
     <string name="guardar">Guardar</string>
     <string name="ver_calendario">Ver Calendario</string>
     <string name="confirmar">Confirmar</string>
+    <string name="detalle_dia_titulo">Details for day %1$d</string>
+    <string name="volver_al_calendario">Back to Calendar</string>
+    <string name="info_dia_placeholder">Information for the day will be shown here.</string>
+    <string name="anadir_nuevo_registro">Add New Entry</string>
+    <string name="mes_anterior">Previous Month</string>
+    <string name="mes_siguiente">Next Month</string>
 </resources>
     

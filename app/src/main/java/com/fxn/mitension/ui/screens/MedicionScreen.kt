@@ -30,7 +30,7 @@ import com.fxn.mitension.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
+fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewModel = viewModel()) {
     val uiState by viewModel.uiState
     var mostrarPopupSistolica by remember { mutableStateOf(false) }
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
@@ -90,7 +90,7 @@ fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
                     )
                 }
                 Button(
-                    onClick = { /* TODO: Navegar a pantalla calendario */ },
+                    onClick = { onNavigateToCalendario() },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)

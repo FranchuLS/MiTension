@@ -9,6 +9,12 @@
     <string name="guardar">Gardar</string>
     <string name="ver_calendario">Ver Calendario</string>
     <string name="confirmar">Confirmar</string>
+    <string name="detalle_dia_titulo">Detalles do día %1$d</string>
+    <string name="volver_al_calendario">Volver ao Calendario</string>
+    <string name="info_dia_placeholder">Aquí amosarase a información do día.</string>
+    <string name="anadir_nuevo_registro">Engadir Novo Rexistro</string>
+    <string name="mes_anterior">Mes Anterior</string>
+    <string name="mes_siguiente">Mes Seguinte</string>
 </resources>
 
     
