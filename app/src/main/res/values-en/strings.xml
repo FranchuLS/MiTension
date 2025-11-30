@@ -14,5 +14,7 @@
     <string name="anadir_nuevo_registro">Add New Entry</string>
     <string name="mes_anterior">Previous Month</string>
     <string name="mes_siguiente">Next Month</string>
+    <!--Mensajes de error-->
+    <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
 </resources>
     

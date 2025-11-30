@@ -15,6 +15,8 @@
     <string name="anadir_nuevo_registro">Añadir Nuevo Registro</string>
     <string name="mes_anterior">Mes Anterior</string>
     <string name="mes_siguiente">Mes Siguiente</string>
+    <!--Mensajes de error-->
+    <string name="error_campos_obligatorios">Ambos campos, Alta y Baja, son obligatorios.</string>
 </resources>
 
     

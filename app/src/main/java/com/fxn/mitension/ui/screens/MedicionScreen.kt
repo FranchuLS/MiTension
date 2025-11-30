@@ -1,6 +1,6 @@
 package com.fxn.mitension.ui.screens
 
-
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -27,6 +28,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.ui.viewmodel.MedicionViewModel
 import com.fxn.mitension.R
+import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,6 +36,17 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
     val uiState by viewModel.uiState
     var mostrarPopupSistolica by remember { mutableStateOf(false) }
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = true) {
+        viewModel.evento.collectLatest { evento ->
+            when (evento) {
+                is MedicionViewModel.UiEvento.MostrarMensaje -> {
+                    Toast.makeText(context, context.getString(evento.idRecursoString), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -79,9 +92,9 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { /* TODO: Lógica de guardar */ },
+                    onClick = { viewModel.guardarMedicion() },
                     modifier = androidx.compose.ui.Modifier
-                        .weight(1f)
+                        .weight(5f)
                         .height(48.dp)
                 ) {
                     Text(
@@ -92,7 +105,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
                 Button(
                     onClick = { onNavigateToCalendario() },
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(5f)
                         .height(48.dp)
                 ) {
                     Text(
