@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -24,10 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.ui.viewmodel.MedicionViewModel
+import com.fxn.mitension.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
+fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewModel = viewModel()) {
     val uiState by viewModel.uiState
     var mostrarPopupSistolica by remember { mutableStateOf(false) }
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
@@ -56,15 +59,15 @@ fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
 
             // Campo Sistólica
             TensionDisplay(
-                label = "La Alta (sistólica)",
-                valor = viewModel.formatDisplayValue(uiState.sistolica),
+                label = stringResource(id = R.string.tension_alta_label),
+                valor = uiState.sistolica,
                 onClick = { mostrarPopupSistolica = true }
             )
 
             // Campo Diastólica
             TensionDisplay(
-                label = "La Baja (diastólica)",
-                valor = viewModel.formatDisplayValue(uiState.diastolica),
+                label = stringResource(id = R.string.tension_baja_label),
+                valor = uiState.diastolica,
                 onClick = { mostrarPopupDiastolica = true }
             )
 
@@ -73,13 +76,29 @@ fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
             // Botones inferiores
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Button(onClick = { /* TODO: Lógica de guardar */ }) {
-                    Text("Guardar")
+                Button(
+                    onClick = { /* TODO: Lógica de guardar */ },
+                    modifier = androidx.compose.ui.Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                ) {
+                    Text(
+                        stringResource(id = R.string.guardar),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
-                Button(onClick = { /* TODO: Navegar a pantalla calendario */ }) {
-                    Text("Ver Calendario")
+                Button(
+                    onClick = { onNavigateToCalendario() },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                ) {
+                    Text(
+                        stringResource(id = R.string.ver_calendario),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
         }
@@ -88,7 +107,7 @@ fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
     // Pop-ups
     if (mostrarPopupSistolica) {
         TensionInputDialog(
-            titulo = "Introduce la Alta (sistólica)",
+            titulo = stringResource(id = R.string.dialog_alta_titulo),
             valorInicial = uiState.sistolica.ifEmpty { "1" },
             onDismiss = { mostrarPopupSistolica = false },
             onConfirm = { valor ->
@@ -100,7 +119,7 @@ fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
 
     if (mostrarPopupDiastolica) {
         TensionInputDialog(
-            titulo = "Introduce la Baja (diastólica)",
+            titulo = stringResource(id = R.string.dialog_baja_titulo),
             valorInicial = uiState.diastolica.ifEmpty { "0" },
             onDismiss = { mostrarPopupDiastolica = false },
             onConfirm = { valor ->
@@ -114,22 +133,31 @@ fun MedicionScreen(viewModel: MedicionViewModel = viewModel()) {
 
 @Composable
 fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
+    val valorFormateado = remember(valor) {
+        if (valor.length == 3) {
+            "${valor.substring(0, 2)},${valor.substring(2)}"
+        } else {
+            valor
+        }
+    }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = label, style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
+                .fillMaxWidth(0.7f)
+                .height(120.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
                 .clickable(onClick = onClick)
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = valor.ifEmpty { "Pulsa para añadir" },
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant
+                text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valorFormateado,
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary // <-- Color primario para el valor
             )
         }
     }
@@ -192,9 +220,14 @@ fun TensionInputDialog(
                         onConfirm(text.text)
                         focusManager.clearFocus()
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
                 ) {
-                    Text("Confirmar")
+                    Text(
+                        stringResource(id = R.string.confirmar),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                 }
             }
         }

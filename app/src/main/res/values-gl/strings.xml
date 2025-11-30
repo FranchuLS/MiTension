@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">A miña Tensión</string>
+    <string name="tension_alta_label">A Alta (sistólica)</string>
+    <string name="tension_baja_label">A Baixa (diastólica)</string>
+    <string name="dialog_alta_titulo">Introduce a Alta (sistólica)</string>
+    <string name="dialog_baja_titulo">Introduce a Baixa (diastólica)</string>
+    <string name="pulsa_para_anadir">Preme para engadir</string>
+    <string name="guardar">Gardar</string>
+    <string name="ver_calendario">Ver Calendario</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="detalle_dia_titulo">Detalles do día %1$d</string>
+    <string name="volver_al_calendario">Volver ao Calendario</string>
+    <string name="info_dia_placeholder">Aquí amosarase a información do día.</string>
+    <string name="anadir_nuevo_registro">Engadir Novo Rexistro</string>
+    <string name="mes_anterior">Mes Anterior</string>
+    <string name="mes_siguiente">Mes Seguinte</string>
+</resources>
+
+    

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">MiTension</string>
+    <string name="tension_alta_label">La Alta (sistólica)</string>
+    <string name="tension_baja_label">La Baja (diastólica)</string>
+    <string name="dialog_alta_titulo">Introduce la Alta (sistólica)</string>
+    <string name="dialog_baja_titulo">Introduce la Baja (diastólica)</string>
+    <string name="pulsa_para_anadir">Pulsa para añadir</string>
+    <string name="guardar">Guardar</string>
+    <string name="ver_calendario">Ver Calendario</string>
+    <string name="confirmar">Confirmar</string>
+    <string name="detalle_dia_titulo">Details for day %1$d</string>
+    <string name="volver_al_calendario">Back to Calendar</string>
+    <string name="info_dia_placeholder">Information for the day will be shown here.</string>
+    <string name="anadir_nuevo_registro">Add New Entry</string>
+    <string name="mes_anterior">Previous Month</string>
+    <string name="mes_siguiente">Next Month</string>
+</resources>
+    

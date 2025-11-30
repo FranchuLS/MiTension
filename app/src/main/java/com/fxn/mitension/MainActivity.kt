@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.fxn.mitension.ui.screens.MedicionScreen
+import com.fxn.mitension.ui.AppNavigation
 import com.fxn.mitension.ui.theme.MiTensionDosTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MedicionScreen()
+                    AppNavigation()
                 }
             }
         }
