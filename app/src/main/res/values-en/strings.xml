@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MiTension</string>
+    <string name="tension_alta_label">La Alta (sistólica)</string>
+    <string name="tension_baja_label">La Baja (diastólica)</string>
+    <string name="dialog_alta_titulo">Introduce la Alta (sistólica)</string>
+    <string name="dialog_baja_titulo">Introduce la Baja (diastólica)</string>
+    <string name="pulsa_para_anadir">Pulsa para añadir</string>
+    <string name="guardar">Guardar</string>
+    <string name="ver_calendario">Ver Calendario</string>
+    <string name="confirmar">Confirmar</string>
+</resources>
+    

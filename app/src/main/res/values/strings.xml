@@ -1,3 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MiTension</string>
+    <string name="app_name">MyPressure</string>
+    <string name="tension_alta_label">High (systolic)</string>
+    <string name="tension_baja_label">Low (diastolic)</string>
+    <string name="dialog_alta_titulo">Enter High (systolic)</string>
+    <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
+    <string name="pulsa_para_anadir">Tap to add</string>
+    <string name="guardar">Save</string>
+    <string name="ver_calendario">View Calendar</string>
+    <string name="confirmar">Confirm</string>
 </resources>
+
+    

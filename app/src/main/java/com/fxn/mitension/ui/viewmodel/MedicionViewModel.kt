@@ -38,13 +38,4 @@ class MedicionViewModel : ViewModel() {
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
         return "$periodoStr - Medición ${_uiState.value.numeroMedicion}/3"
     }
-
-    // Formatea el valor para mostrarlo en la UI principal con coma
-    fun formatDisplayValue(valor: String): String {
-        return if (valor.length == 3) {
-            "${valor.substring(0, 2)},${valor.substring(2)}"
-        } else {
-            valor
-        }
-    }
 }
