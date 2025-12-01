@@ -15,8 +15,12 @@
     <string name="anadir_nuevo_registro">Engadir Novo Rexistro</string>
     <string name="mes_anterior">Mes Anterior</string>
     <string name="mes_siguiente">Mes Seguinte</string>
-    <!--Mensajes de error-->
+    <!--Mensajes-->
     <string name="error_campos_obligatorios">Ambos os campos, Alta e Baixa, son obrigatorios.</string>
+    <string name="guardado_con_exito">¡Medición gardada con éxito!</string>
+    <string name="error_periodo_lleno">Xa completaches os 3 rexistros para este período. O seguinte período comeza en %s.</string>
+    <string name="error_no_numerico">Erro: Valor numérico inválido.</string>
+    <string name="error_clase_view_model_desconocida">"Clase ViewModel desconocida"</string>
 </resources>
 
     

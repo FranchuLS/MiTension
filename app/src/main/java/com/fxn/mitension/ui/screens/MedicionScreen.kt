@@ -28,21 +28,47 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.ui.viewmodel.MedicionViewModel
 import com.fxn.mitension.R
+import com.fxn.mitension.data.MedicionRepository
+import com.fxn.mitension.ui.viewmodel.MedicionViewModelFactory
+import com.fxn.mitension.data.AppDatabase
 import kotlinx.coroutines.flow.collectLatest
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewModel = viewModel()) {
+fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
+    // Obtener el nuevo string de error
+    val errorViewModel = stringResource(id = R.string.error_clase_view_model_desconocida)
+
+    val context = LocalContext.current
+    // Creamos instancias de la DB, DAO, Repo y la Factoría.
+    // Usamos 'remember' para que no se creen en cada recomposición.
+    val medicionDao = remember { AppDatabase.getDatabase(context).medicionDao() }
+    val repository = remember { MedicionRepository(medicionDao) }
+    val factory = remember { MedicionViewModelFactory(repository, errorViewModel) }
+
+    // Pasamos la factoría al composable 'viewModel'
+    val viewModel: MedicionViewModel = viewModel(factory = factory)
+
     val uiState by viewModel.uiState
     var mostrarPopupSistolica by remember { mutableStateOf(false) }
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+    // Añadimos el nuevo mensaje de éxito
+    val mensajeErrorCampos = stringResource(id = R.string.error_campos_obligatorios)
+    val mensajeErrorPeriodoLleno = stringResource(id = R.string.error_periodo_lleno)
+    val mensajeExito = stringResource(id = R.string.guardado_con_exito)
+
+
     LaunchedEffect(key1 = true) {
         viewModel.evento.collectLatest { evento ->
             when (evento) {
                 is MedicionViewModel.UiEvento.MostrarMensaje -> {
-                    Toast.makeText(context, context.getString(evento.idRecursoString), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, evento.mensaje, Toast.LENGTH_LONG).show()
+                }
+                is MedicionViewModel.UiEvento.GuardadoConExito -> {
+                    Toast.makeText(context, evento.mensaje, Toast.LENGTH_SHORT).show()
+                    viewModel.onGuardadoExitoso()
                 }
             }
         }
@@ -92,9 +118,9 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { viewModel.guardarMedicion() },
-                    modifier = androidx.compose.ui.Modifier
-                        .weight(5f)
+                    onClick = { viewModel.guardarMedicion(mensajeErrorCampos, mensajeErrorPeriodoLleno, mensajeExito) },
+                    modifier = Modifier
+                        .weight(3f)
                         .height(48.dp)
                 ) {
                     Text(
@@ -105,7 +131,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
                 Button(
                     onClick = { onNavigateToCalendario() },
                     modifier = Modifier
-                        .weight(5f)
+                        .weight(3f)
                         .height(48.dp)
                 ) {
                     Text(
@@ -155,7 +181,7 @@ fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = label, style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.7f)

@@ -14,7 +14,11 @@
     <string name="anadir_nuevo_registro">Add New Entry</string>
     <string name="mes_anterior">Previous Month</string>
     <string name="mes_siguiente">Next Month</string>
-    <!--Mensajes de error-->
+    <!--Mensajes-->
     <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
+    <string name="guardado_con_exito">Save successfully!</string>
+    <string name="error_periodo_lleno">You have already completed the 3 entries for this period. The next period starts in %s.</string>
+    <string name="error_no_numerico">Error: Invalid numeric value.</string>
+    <string name="error_clase_view_model_desconocida">"Unknown ViewModel class"</string>
 </resources>
     
