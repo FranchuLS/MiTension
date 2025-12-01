@@ -1,9 +1,7 @@
 package com.fxn.mitension.ui.viewmodel
 
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.fxn.mitension.R
 import com.fxn.mitension.data.MedicionRepository
 
 // Esta factoría sabe cómo crear una instancia de MedicionViewModel.

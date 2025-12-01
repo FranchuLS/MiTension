@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">A miña Tensión</string>
+    <string name="periodo_manana">Mañá</string>
+    <string name="periodo_tarde">Tarde</string>
+    <string name="periodo_noche">Noite</string>
+    <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
     <string name="tension_alta_label">A Alta (sistólica)</string>
     <string name="tension_baja_label">A Baixa (diastólica)</string>
     <string name="dialog_alta_titulo">Introduce a Alta (sistólica)</string>

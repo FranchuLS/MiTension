@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyPressure</string>
-    <string name="tension_alta_label">High (systolic)</string>
-    <string name="tension_baja_label">Low (diastolic)</string>
-    <string name="dialog_alta_titulo">Enter High (systolic)</string>
-    <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
-    <string name="pulsa_para_anadir">Tap to add</string>
-    <string name="guardar">Save</string>
-    <string name="ver_calendario">View Calendar</string>
-    <string name="confirmar">Confirm</string>
+    <string name="app_name">MiTension</string>
+    <string name="periodo_manana">Mañana</string>
+    <string name="periodo_tarde">Tarde</string>
+    <string name="periodo_noche">Noche</string>
+    <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
+    <string name="tension_alta_label">La Alta (sistólica)</string>
+    <string name="tension_baja_label">La Baja (diastólica)</string>
+    <string name="dialog_alta_titulo">Introduce la Alta (sistólica)</string>
+    <string name="dialog_baja_titulo">Introduce la Baja (diastólica)</string>
+    <string name="pulsa_para_anadir">Pulsa para añadir</string>
+    <string name="guardar">Guardar</string>
+    <string name="ver_calendario">Ver Calendario</string>
+    <string name="confirmar">Confirmar</string>
     <string name="detalle_dia_titulo">Detalles del día %1$d</string>
     <string name="volver_al_calendario">Volver al Calendario</string>
     <string name="info_dia_placeholder">Aquí se mostrará la información del día.</string>

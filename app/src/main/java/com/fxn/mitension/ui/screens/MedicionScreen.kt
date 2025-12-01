@@ -31,6 +31,7 @@ import com.fxn.mitension.R
 import com.fxn.mitension.data.MedicionRepository
 import com.fxn.mitension.ui.viewmodel.MedicionViewModelFactory
 import com.fxn.mitension.data.AppDatabase
+import com.fxn.mitension.util.PeriodoDelDia
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -59,6 +60,17 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     val mensajeErrorPeriodoLleno = stringResource(id = R.string.error_periodo_lleno)
     val mensajeExito = stringResource(id = R.string.guardado_con_exito)
 
+    val periodoNombre = when (uiState.periodo) {
+        PeriodoDelDia.MAÑANA -> stringResource(id = R.string.periodo_manana)
+        PeriodoDelDia.TARDE -> stringResource(id = R.string.periodo_tarde)
+        PeriodoDelDia.NOCHE -> stringResource(id = R.string.periodo_noche)
+    }
+
+    val tituloCompleto = stringResource(
+        id = R.string.titulo_medicion,
+        periodoNombre, // Este será el primer argumento (%1$s)
+        uiState.numeroMedicion // Este será el segundo argumento (%2$d)
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.evento.collectLatest { evento ->
@@ -77,7 +89,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(viewModel.getTitulo()) },
+                title = { Text(tituloCompleto) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
@@ -180,8 +192,8 @@ fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
         }
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.titleMedium)
-        Spacer(modifier = Modifier.height(10.dp))
+        Text(text = label, style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
@@ -193,7 +205,7 @@ fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
         ) {
             Text(
                 text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valorFormateado,
-                style = MaterialTheme.typography.displayLarge.copy(
+                style = MaterialTheme.typography.displayMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary // <-- Color primario para el valor

@@ -2,7 +2,6 @@ package com.fxn.mitension.ui.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fxn.mitension.data.Medicion
@@ -15,7 +14,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import com.fxn.mitension.util.obtenerRangoTimestamps
 import com.fxn.mitension.util.obtenerTiempoRestanteParaSiguientePeriodo
-import com.fxn.mitension.R
 
 data class MedicionUiState(
     val sistolica: String = "",
@@ -108,15 +106,6 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
             diastolica = "",
             numeroMedicion = nuevoNumero
         )
-    }
-    fun getTitulo(): String {
-        val periodoStr = _uiState.value.periodo.name.lowercase()
-            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
-        return "$periodoStr - Medición ${_uiState.value.numeroMedicion}/3"
-    }
-
-    fun limpiarCampos() {
-        _uiState.value = _uiState.value.copy(sistolica = "", diastolica = "")
     }
 
     sealed class UiEvento {
