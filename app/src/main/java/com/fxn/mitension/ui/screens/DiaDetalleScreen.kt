@@ -25,6 +25,9 @@ import java.time.Instant
 import java.time.ZoneId
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import com.fxn.mitension.util.clasificarTension
+import com.fxn.mitension.util.obtenerColorPorEstado
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,13 +82,19 @@ fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
                     // Calculamos las medias a partir de la lista.
                     // Usamos average() y lo redondeamos a Int.
                     val mediaSistolica = medicionesDelPeriodo.map { it.sistolica }.average().toInt()
-                    val mediaDiastolica =
-                        medicionesDelPeriodo.map { it.diastolica }.average().toInt()
+                    val mediaDiastolica = medicionesDelPeriodo.map { it.diastolica }.average().toInt()
+                    // Clasificamos la media para obtener su estado (Normal, Alta, etc.)
+                    val estadoDeLaTension = clasificarTension(mediaSistolica, mediaDiastolica)
+
                     //Mostramos la media del período
                     item {
+                        // Obtenemos el color correspondiente a ese estado.
+                        val colorDeEstado = obtenerColorPorEstado(estado = estadoDeLaTension)
+
                         PeriodoMediaItem(
                             mediaSistolica = mediaSistolica,
-                            mediaDiastolica = mediaDiastolica
+                            mediaDiastolica = mediaDiastolica,
+                            colorFondo = colorDeEstado
                         )
                     }
                 }
@@ -144,12 +153,12 @@ fun MedicionItem(medicion: Medicion) {
 }
 
 @Composable
-fun PeriodoMediaItem(mediaSistolica: Int, mediaDiastolica: Int) {
+fun PeriodoMediaItem(mediaSistolica: Int, mediaDiastolica: Int, colorFondo: Color) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        // Usamos colores primarios para destacar la tarjeta de la media
+        // Usamos el color que nos pasan como parámetro
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = colorFondo
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -164,14 +173,17 @@ fun PeriodoMediaItem(mediaSistolica: Int, mediaDiastolica: Int) {
             Text(
                 text = stringResource(id = R.string.media_label),
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                // Hacemos el texto blanco para que contraste con los fondos oscuros
+                color = Color.White
             )
             // Valor de la media
             Text(
                 text = "$mediaSistolica / $mediaDiastolica",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                // Texto blanco también aquí
+                color = Color.White
             )
         }
     }

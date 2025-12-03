@@ -82,6 +82,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 is MedicionViewModel.UiEvento.MostrarMensaje -> {
                     Toast.makeText(context, evento.mensaje, Toast.LENGTH_LONG).show()
                 }
+
                 is MedicionViewModel.UiEvento.GuardadoConExito -> {
                     Toast.makeText(context, evento.mensaje, Toast.LENGTH_SHORT).show()
                     viewModel.onGuardadoExitoso()
@@ -134,7 +135,13 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { viewModel.guardarMedicion(mensajeErrorCampos, mensajeErrorPeriodoLleno, mensajeExito) },
+                    onClick = {
+                        viewModel.guardarMedicion(
+                            mensajeErrorCampos,
+                            mensajeErrorPeriodoLleno,
+                            mensajeExito
+                        )
+                    },
                     modifier = Modifier
                         .weight(3f)
                         .height(48.dp)
@@ -188,31 +195,27 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
 
 @Composable
 fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
-    val valorFormateado = remember(valor) {
-        if (valor.length == 3) {
-            "${valor.substring(0, 2)},${valor.substring(2)}"
-        } else {
-            valor
-        }
-    }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.headlineMedium)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.headlineSmall
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
                 .height(120.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.large)
                 .clickable(onClick = onClick)
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valorFormateado,
+                text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valor,
                 style = MaterialTheme.typography.displayMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary // <-- Color primario para el valor
+                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary
             )
         }
     }
