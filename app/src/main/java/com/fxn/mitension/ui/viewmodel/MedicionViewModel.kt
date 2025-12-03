@@ -9,7 +9,6 @@ import com.fxn.mitension.data.MedicionRepository
 import com.fxn.mitension.util.PeriodoDelDia
 import com.fxn.mitension.util.obtenerPeriodoActual
 import kotlinx.coroutines.flow.MutableSharedFlow
-import java.util.Locale
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import com.fxn.mitension.util.obtenerRangoTimestamps

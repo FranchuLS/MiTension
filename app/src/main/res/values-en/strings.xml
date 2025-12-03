@@ -3,6 +3,7 @@
     <string name="periodo_manana">Morning</string>
     <string name="periodo_tarde">Afternoon</string>
     <string name="periodo_noche">Night</string>
+    <string name="media_label">Average</string>
     <string name="titulo_medicion">%1$s - Measurement %2$d/3</string>
     <string name="tension_alta_label">High (systolic)</string>
     <string name="tension_baja_label">Low (diastolic)</string>
@@ -18,6 +19,8 @@
     <string name="anadir_nuevo_registro">Add New Entry</string>
     <string name="mes_anterior">Previous Month</string>
     <string name="mes_siguiente">Next Month</string>
+    <string name="titulo_mediciones_completas">You have completed the measurements for %1$s</string>
+
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
     <string name="guardado_con_exito">Save successfully!</string>

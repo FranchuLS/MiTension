@@ -4,6 +4,7 @@
     <string name="periodo_manana">Mañana</string>
     <string name="periodo_tarde">Tarde</string>
     <string name="periodo_noche">Noche</string>
+    <string name="media_label">Media</string>
     <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
     <string name="tension_alta_label">La Alta (sistólica)</string>
     <string name="tension_baja_label">La Baja (diastólica)</string>
@@ -19,6 +20,8 @@
     <string name="anadir_nuevo_registro">Añadir Nuevo Registro</string>
     <string name="mes_anterior">Mes Anterior</string>
     <string name="mes_siguiente">Mes Siguiente</string>
+    <string name="titulo_mediciones_completas">Ya has completado las mediciones de %1$s</string>
+
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Ambos campos, Alta y Baja, son obligatorios.</string>
     <string name="guardado_con_exito">¡Medición guardada con éxito!</string>

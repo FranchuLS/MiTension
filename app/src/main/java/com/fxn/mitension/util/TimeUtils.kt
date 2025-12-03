@@ -74,3 +74,20 @@ fun obtenerTiempoRestanteParaSiguientePeriodo(periodoActual: PeriodoDelDia): Str
         else -> "${minutos}m"
     }
 }
+
+
+/**
+ * Devuelve el Período del Día para un timestamp específico.
+ */
+fun obtenerPeriodoParaTimestamp(timestamp: Long): PeriodoDelDia {
+    val calendario = Calendar.getInstance().apply { timeInMillis = timestamp }
+    val hora = calendario.get(Calendar.HOUR_OF_DAY)
+    val minuto = calendario.get(Calendar.MINUTE)
+    val tiempoEnMinutos = hora * 60 + minuto
+
+    return when {
+        tiempoEnMinutos in 1..750 -> PeriodoDelDia.MAÑANA
+        tiempoEnMinutos in 751..1140 -> PeriodoDelDia.TARDE
+        else -> PeriodoDelDia.NOCHE
+    }
+}

@@ -15,6 +15,8 @@ object AppDestinations {
     const val MEDICION = "medicion"
     const val CALENDARIO = "calendario"
     const val DIA_DETALLE_ROUTE = "dia_detalle"
+    const val ANIO_ARG = "anio"
+    const val MES_ARG = "mes"
     const val DIA_ARG = "dia"
 }
 
@@ -34,28 +36,23 @@ fun AppNavigation() {
         }
         composable(AppDestinations.CALENDARIO) {
             CalendarioScreen(
-                onNavigateToMedicion = {
-                    navController.popBackStack()
-                },
-                onNavigateToDiaDetalle = { diaSeleccionado ->
-                    navController.navigate("${AppDestinations.DIA_DETALLE_ROUTE}/$diaSeleccionado")
+                onNavigateToMedicion = { navController.popBackStack() },
+                onNavigateToDiaDetalle = { anio, mes, dia ->
+                    navController.navigate("${AppDestinations.DIA_DETALLE_ROUTE}/$anio/$mes/$dia")
                 }
             )
         }
+
         composable(
-            route = "${AppDestinations.DIA_DETALLE_ROUTE}/{${AppDestinations.DIA_ARG}}",
-            arguments = listOf(navArgument(AppDestinations.DIA_ARG) {
-                type =
-                    NavType.IntType
-            })
-        ) { backStackEntry ->
-            // Extraemos el argumento
-            val dia = backStackEntry.arguments?.getInt(AppDestinations.DIA_ARG) ?: 0
+            route = "${AppDestinations.DIA_DETALLE_ROUTE}/{${AppDestinations.ANIO_ARG}}/{${AppDestinations.MES_ARG}}/{${AppDestinations.DIA_ARG}}",
+            arguments = listOf(
+                navArgument(AppDestinations.ANIO_ARG) { type = NavType.IntType },
+                navArgument(AppDestinations.MES_ARG) { type = NavType.IntType },
+                navArgument(AppDestinations.DIA_ARG) { type = NavType.IntType }
+            )
+        ) {
             DiaDetalleScreen(
-                diaDelMes = dia,
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

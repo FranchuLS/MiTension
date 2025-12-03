@@ -25,7 +25,7 @@ import java.util.Locale
 @Composable
 fun CalendarioScreen(
     onNavigateToMedicion: () -> Unit,
-    onNavigateToDiaDetalle: (Int) -> Unit,
+    onNavigateToDiaDetalle: (Int, Int, Int) -> Unit,
     viewModel: CalendarioViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState
@@ -56,7 +56,9 @@ fun CalendarioScreen(
             )
             CalendarioGrid(
                 anioMes = uiState.anioMes,
-                onDiaClick = { dia -> onNavigateToDiaDetalle(dia) }
+                onDiaClick = { dia ->
+                    onNavigateToDiaDetalle(uiState.anioMes.year, uiState.anioMes.monthValue, dia)
+                }
             )
         }
     }

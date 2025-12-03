@@ -66,11 +66,15 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
         PeriodoDelDia.NOCHE -> stringResource(id = R.string.periodo_noche)
     }
 
-    val tituloCompleto = stringResource(
-        id = R.string.titulo_medicion,
-        periodoNombre, // Este será el primer argumento (%1$s)
-        uiState.numeroMedicion // Este será el segundo argumento (%2$d)
-    )
+    val tituloCompleto = if (uiState.numeroMedicion > 3) {
+        stringResource(id = R.string.titulo_mediciones_completas, periodoNombre)
+    } else {
+        stringResource(
+            id = R.string.titulo_medicion,
+            periodoNombre,
+            uiState.numeroMedicion
+        )
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.evento.collectLatest { evento ->

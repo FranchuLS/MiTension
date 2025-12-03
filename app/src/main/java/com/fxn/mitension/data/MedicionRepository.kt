@@ -1,5 +1,7 @@
 package com.fxn.mitension.data
 
+import kotlinx.coroutines.flow.Flow
+
 // El repositorio actúa como intermediario entre la fuente de datos (DAO) y el resto de la app (ViewModel).
 // Recibe el DAO como una dependencia en su constructor.
 class MedicionRepository(private val medicionDao: MedicionDao) {
@@ -17,5 +19,13 @@ class MedicionRepository(private val medicionDao: MedicionDao) {
      */
     suspend fun contarMedicionesEnRango(inicio: Long, fin: Long): Int {
         return medicionDao.contarMedicionesEnRango(inicio, fin)
+    }
+
+    /**
+     * Obtiene un Flow con la lista de mediciones para un rango de tiempo.
+     * Ideal para observar los cambios de un día en tiempo real.
+     */
+    fun obtenerMedicionesEnRango(inicio: Long, fin: Long): Flow<List<Medicion>> {
+        return medicionDao.obtenerMedicionesPorDia(inicio, fin)
     }
 }
