@@ -136,11 +136,11 @@ fun MedicionItem(medicion: Medicion) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = stringResource(id = R.string.tension_alta_label) + ": ${medicion.sistolica}",
+                text = stringResource(id = R.string.tension_alta_label_corta) + ": ${medicion.sistolica}",
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(
-                text = stringResource(id = R.string.tension_baja_label) + ": ${medicion.diastolica}",
+                text = stringResource(id = R.string.tension_baja_label_corta) + ": ${medicion.diastolica}",
                 style = MaterialTheme.typography.bodyLarge
             )
             Text(

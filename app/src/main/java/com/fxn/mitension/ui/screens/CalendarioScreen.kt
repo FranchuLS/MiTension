@@ -145,8 +145,6 @@ fun CalendarioGrid(
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
-        val totalCeldas = (diasEnMes + offset)
-        val numSemanas = if (totalCeldas % 7 == 0) totalCeldas / 7 else (totalCeldas / 7) + 1
 
         // Días del calendario
         for (semana in 0..5) {

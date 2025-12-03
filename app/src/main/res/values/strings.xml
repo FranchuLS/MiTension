@@ -7,7 +7,9 @@
     <string name="media_label">Media</string>
     <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
     <string name="tension_alta_label">La Alta (sistólica)</string>
+    <string name="tension_alta_label_corta">La Alta</string>
     <string name="tension_baja_label">La Baja (diastólica)</string>
+    <string name="tension_baja_label_corta">La Baja</string>
     <string name="dialog_alta_titulo">Introduce la Alta (sistólica)</string>
     <string name="dialog_baja_titulo">Introduce la Baja (diastólica)</string>
     <string name="pulsa_para_anadir">Pulsa para añadir</string>

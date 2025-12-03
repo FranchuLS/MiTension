@@ -68,11 +68,21 @@ class MedicionViewModelTest {
     }
 
     @Test
-    fun `onGuardadoExitoso limpia los campos y actualiza el contador`() {
+    fun `onGuardadoExitoso limpia los campos y actualiza el contador`() = runTest {
+        // GIVEN: El estado inicial tiene valores
         viewModel.onSistolicaChanged("130")
         viewModel.onDiastolicaChanged("85")
+
+        // Y el número de medición es 1 (lo obtenemos del estado inicial que carga el ViewModel)
+        // Para hacer el test más robusto, podemos esperar a que el estado inicial se cargue.
+        testDispatcher.scheduler.advanceUntilIdle() // Avanza las corrutinas pendientes (como el init)
         assertEquals(1, viewModel.uiState.value.numeroMedicion)
+
+        // WHEN: Se llama a onGuardadoExitoso
         viewModel.onGuardadoExitoso()
+        testDispatcher.scheduler.advanceUntilIdle() // Nos aseguramos de que la corrutina interna termine
+
+        // THEN: Los campos se limpian y el contador se incrementa
         val newState = viewModel.uiState.value
         assertEquals("", newState.sistolica)
         assertEquals("", newState.diastolica)

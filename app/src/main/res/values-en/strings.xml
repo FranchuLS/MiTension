@@ -6,7 +6,9 @@
     <string name="media_label">Average</string>
     <string name="titulo_medicion">%1$s - Measurement %2$d/3</string>
     <string name="tension_alta_label">High (systolic)</string>
+    <string name="tension_alta_label_corta">High</string>
     <string name="tension_baja_label">Low (diastolic)</string>
+    <string name="tension_baja_label_corta">Low</string>
     <string name="dialog_alta_titulo">Enter High (systolic)</string>
     <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
     <string name="pulsa_para_anadir">Tap to add</string>

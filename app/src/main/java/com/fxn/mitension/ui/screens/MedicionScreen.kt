@@ -212,7 +212,7 @@ fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
         ) {
             Text(
                 text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valor,
-                style = MaterialTheme.typography.displayMedium.copy(
+                style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
                 color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary
