@@ -28,4 +28,11 @@ class MedicionRepository(private val medicionDao: MedicionDao) {
     fun obtenerMedicionesEnRango(inicio: Long, fin: Long): Flow<List<Medicion>> {
         return medicionDao.obtenerMedicionesPorDia(inicio, fin)
     }
+
+    /**
+     * Llama al DAO para obtener un resumen diario para un rango de meses.
+     */
+    fun obtenerResumenMensual(inicioDelMes: Long, finDelMes: Long): Flow<List<ResumenDiario>> {
+        return medicionDao.obtenerResumenMensual(inicioDelMes, finDelMes)
+    }
 }
