@@ -1,18 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MiTension</string>
-    <string name="tension_alta_label">La Alta (sistólica)</string>
-    <string name="tension_baja_label">La Baja (diastólica)</string>
-    <string name="dialog_alta_titulo">Introduce la Alta (sistólica)</string>
-    <string name="dialog_baja_titulo">Introduce la Baja (diastólica)</string>
-    <string name="pulsa_para_anadir">Pulsa para añadir</string>
-    <string name="guardar">Guardar</string>
-    <string name="ver_calendario">Ver Calendario</string>
-    <string name="confirmar">Confirmar</string>
+    <string name="app_name">MyPressure</string>
+    <string name="periodo_manana">Morning</string>
+    <string name="periodo_tarde">Afternoon</string>
+    <string name="periodo_noche">Night</string>
+    <string name="media_label">Average</string>
+    <string name="titulo_medicion">%1$s - Measurement %2$d/3</string>
+    <string name="tension_alta_label">High (systolic)</string>
+    <string name="tension_alta_label_corta">High</string>
+    <string name="tension_baja_label">Low (diastolic)</string>
+    <string name="tension_baja_label_corta">Low</string>
+    <string name="dialog_alta_titulo">Enter High (systolic)</string>
+    <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
+    <string name="pulsa_para_anadir">Tap to add</string>
+    <string name="guardar">Save</string>
+    <string name="ver_calendario">View Calendar</string>
+    <string name="confirmar">Confirm</string>
     <string name="detalle_dia_titulo">Details for day %1$d</string>
     <string name="volver_al_calendario">Back to Calendar</string>
     <string name="info_dia_placeholder">Information for the day will be shown here.</string>
     <string name="anadir_nuevo_registro">Add New Entry</string>
     <string name="mes_anterior">Previous Month</string>
     <string name="mes_siguiente">Next Month</string>
+    <string name="titulo_mediciones_completas">You have completed the measurements for %1$s</string>
+
+    <!--Mensajes-->
+    <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
+    <string name="guardado_con_exito">Measurement saved successfully!</string>
+    <string name="error_periodo_lleno">You have already completed the 3 entries for this period. The next period starts in %s.</string>
+    <string name="error_no_numerico">Error: Invalid numeric value.</string>
+    <string name="error_clase_view_model_desconocida">Unknown ViewModel class</string>
+
+    <!--ALERTAS-->
+    <string name="canal_notificaciones_nombre">Measurement Reminders</string>
+    <string name="canal_notificaciones_descripcion">Notifications to remember to take your blood pressure.</string>
+    <string name="notificacion_titulo">It\'s time to record your blood pressure!</string>
+    <string name="notificacion_texto">You still have %d measurements left to complete the %s period.</string>
 </resources>
     

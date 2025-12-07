@@ -1,20 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyPressure</string>
-    <string name="tension_alta_label">High (systolic)</string>
-    <string name="tension_baja_label">Low (diastolic)</string>
-    <string name="dialog_alta_titulo">Enter High (systolic)</string>
-    <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
-    <string name="pulsa_para_anadir">Tap to add</string>
-    <string name="guardar">Save</string>
-    <string name="ver_calendario">View Calendar</string>
-    <string name="confirmar">Confirm</string>
+    <string name="app_name">MiTension</string>
+    <string name="periodo_manana">Mañana</string>
+    <string name="periodo_tarde">Tarde</string>
+    <string name="periodo_noche">Noche</string>
+    <string name="media_label">Media</string>
+    <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
+    <string name="tension_alta_label">La Alta (sistólica)</string>
+    <string name="tension_alta_label_corta">La Alta</string>
+    <string name="tension_baja_label">La Baja (diastólica)</string>
+    <string name="tension_baja_label_corta">La Baja</string>
+    <string name="dialog_alta_titulo">Introduce la Alta (sistólica)</string>
+    <string name="dialog_baja_titulo">Introduce la Baja (diastólica)</string>
+    <string name="pulsa_para_anadir">Pulsa para añadir</string>
+    <string name="guardar">Guardar</string>
+    <string name="ver_calendario">Ver Calendario</string>
+    <string name="confirmar">Confirmar</string>
     <string name="detalle_dia_titulo">Detalles del día %1$d</string>
     <string name="volver_al_calendario">Volver al Calendario</string>
     <string name="info_dia_placeholder">Aquí se mostrará la información del día.</string>
     <string name="anadir_nuevo_registro">Añadir Nuevo Registro</string>
     <string name="mes_anterior">Mes Anterior</string>
     <string name="mes_siguiente">Mes Siguiente</string>
+    <string name="titulo_mediciones_completas">Ya has completado las mediciones de %1$s</string>
+
+    <!--Mensajes-->
+    <string name="error_campos_obligatorios">Ambos campos, Alta y Baja, son obligatorios.</string>
+    <string name="guardado_con_exito">¡Medición guardada con éxito!</string>
+    <string name="error_periodo_lleno">Ya has completado los 3 registros para este período. El siguiente período empieza en %s.</string>
+    <string name="error_no_numerico">Error: Valor numérico inválido.</string>
+    <string name="error_clase_view_model_desconocida">Clase de ViewModel desconocida</string>
+
+    <!--ALERTAS-->
+    <string name="canal_notificaciones_nombre">Recordatorios de Medición</string>
+    <string name="canal_notificaciones_descripcion">Notificaciones para recordar tomar la tensión.</string>
+    <string name="notificacion_titulo">¡Es hora de registrar tu tensión!</string>
+    <string name="notificacion_texto">Aún te faltan %d mediciones para completar el período de la %s.</string>
 </resources>
 
     

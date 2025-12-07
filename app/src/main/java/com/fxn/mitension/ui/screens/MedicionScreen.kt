@@ -1,6 +1,6 @@
 package com.fxn.mitension.ui.screens
 
-
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -27,18 +28,73 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.ui.viewmodel.MedicionViewModel
 import com.fxn.mitension.R
+import com.fxn.mitension.data.MedicionRepository
+import com.fxn.mitension.ui.viewmodel.MedicionViewModelFactory
+import com.fxn.mitension.data.AppDatabase
+import com.fxn.mitension.util.PeriodoDelDia
+import kotlinx.coroutines.flow.collectLatest
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewModel = viewModel()) {
+fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
+    // Obtener el nuevo string de error
+    val errorViewModel = stringResource(id = R.string.error_clase_view_model_desconocida)
+
+    val context = LocalContext.current
+    // Creamos instancias de la DB, DAO, Repo y la Factoría.
+    // Usamos 'remember' para que no se creen en cada recomposición.
+    val medicionDao = remember { AppDatabase.getDatabase(context).medicionDao() }
+    val repository = remember { MedicionRepository(medicionDao) }
+    val factory = remember { MedicionViewModelFactory(repository, errorViewModel) }
+
+    // Pasamos la factoría al composable 'viewModel'
+    val viewModel: MedicionViewModel = viewModel(factory = factory)
+
     val uiState by viewModel.uiState
     var mostrarPopupSistolica by remember { mutableStateOf(false) }
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
 
+    // Añadimos el nuevo mensaje de éxito
+    val mensajeErrorCampos = stringResource(id = R.string.error_campos_obligatorios)
+    val mensajeErrorPeriodoLleno = stringResource(id = R.string.error_periodo_lleno)
+    val mensajeExito = stringResource(id = R.string.guardado_con_exito)
+
+    val periodoNombre = when (uiState.periodo) {
+        PeriodoDelDia.MAÑANA -> stringResource(id = R.string.periodo_manana)
+        PeriodoDelDia.TARDE -> stringResource(id = R.string.periodo_tarde)
+        PeriodoDelDia.NOCHE -> stringResource(id = R.string.periodo_noche)
+    }
+
+    val tituloCompleto = if (uiState.numeroMedicion > 3) {
+        stringResource(id = R.string.titulo_mediciones_completas, periodoNombre)
+    } else {
+        stringResource(
+            id = R.string.titulo_medicion,
+            periodoNombre,
+            uiState.numeroMedicion
+        )
+    }
+
+    LaunchedEffect(key1 = true) {
+        viewModel.evento.collectLatest { evento ->
+            when (evento) {
+                is MedicionViewModel.UiEvento.MostrarMensaje -> {
+                    Toast.makeText(context, evento.mensaje, Toast.LENGTH_LONG).show()
+                }
+
+                is MedicionViewModel.UiEvento.GuardadoConExito -> {
+                    Toast.makeText(context, evento.mensaje, Toast.LENGTH_SHORT).show()
+                    viewModel.onGuardadoExitoso()
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(viewModel.getTitulo()) },
+                title = { Text(tituloCompleto) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary
@@ -79,9 +135,15 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(
-                    onClick = { /* TODO: Lógica de guardar */ },
-                    modifier = androidx.compose.ui.Modifier
-                        .weight(1f)
+                    onClick = {
+                        viewModel.guardarMedicion(
+                            mensajeErrorCampos,
+                            mensajeErrorPeriodoLleno,
+                            mensajeExito
+                        )
+                    },
+                    modifier = Modifier
+                        .weight(3f)
                         .height(48.dp)
                 ) {
                     Text(
@@ -92,7 +154,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
                 Button(
                     onClick = { onNavigateToCalendario() },
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(3f)
                         .height(48.dp)
                 ) {
                     Text(
@@ -133,31 +195,27 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit, viewModel: MedicionViewMo
 
 @Composable
 fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
-    val valorFormateado = remember(valor) {
-        if (valor.length == 3) {
-            "${valor.substring(0, 2)},${valor.substring(2)}"
-        } else {
-            valor
-        }
-    }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = label, style = MaterialTheme.typography.titleMedium)
+        Text(
+            text = label,
+            style = MaterialTheme.typography.headlineSmall
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.7f)
                 .height(120.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.medium)
+                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.large)
                 .clickable(onClick = onClick)
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valorFormateado,
-                style = MaterialTheme.typography.displayLarge.copy(
+                text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valor,
+                style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary // <-- Color primario para el valor
+                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary
             )
         }
     }

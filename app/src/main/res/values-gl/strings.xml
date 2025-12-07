@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">A miña Tensión</string>
+    <string name="periodo_manana">Mañá</string>
+    <string name="periodo_tarde">Tarde</string>
+    <string name="periodo_noche">Noite</string>
+    <string name="media_label">Media</string>
+    <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
     <string name="tension_alta_label">A Alta (sistólica)</string>
+    <string name="tension_alta_label_corta">A Alta</string>
     <string name="tension_baja_label">A Baixa (diastólica)</string>
+    <string name="tension_baja_label_corta">A Baixa</string>
     <string name="dialog_alta_titulo">Introduce a Alta (sistólica)</string>
     <string name="dialog_baja_titulo">Introduce a Baixa (diastólica)</string>
     <string name="pulsa_para_anadir">Preme para engadir</string>
@@ -15,6 +22,18 @@
     <string name="anadir_nuevo_registro">Engadir Novo Rexistro</string>
     <string name="mes_anterior">Mes Anterior</string>
     <string name="mes_siguiente">Mes Seguinte</string>
-</resources>
+    <string name="titulo_mediciones_completas">Xa completaches as medicións de %1$s</string>
 
-    
+    <!--Mensajes-->
+    <string name="error_campos_obligatorios">Ambos os campos, Alta e Baixa, son obrigatorios.</string>
+    <string name="guardado_con_exito">¡Medición gardada con éxito!</string>
+    <string name="error_periodo_lleno">Xa completaches os 3 rexistros para este período. O seguinte período comeza en %s.</string>
+    <string name="error_no_numerico">Erro: Valor numérico inválido.</string>
+    <string name="error_clase_view_model_desconocida">Clase de ViewModel descoñecida</string>
+
+    <!--ALERTAS-->
+    <string name="canal_notificaciones_nombre">Recordatorios da Medición</string>
+    <string name="canal_notificaciones_descripcion">Notificacións para recordar tomar a tensión.</string>
+    <string name="notificacion_titulo">¡É hora de rexistrar a túa tensión!</string>
+    <string name="notificacion_texto">Aínda che faltan %d medicións para completar o período da %s.</string>
+</resources>

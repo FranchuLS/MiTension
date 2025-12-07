@@ -1,8 +1,14 @@
 package com.fxn.mitension.data
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity
 data class Medicion(
-    val sistolica: Int? = null,
-    val diastolica: Int? = null,
-    //todo val timestamp: Long = System.currentTimeMillis() // Lo añadiremos cuando guardemos datos
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val sistolica: Int,
+    val diastolica: Int,
+    val timestamp: Long = System.currentTimeMillis()
 )
 
