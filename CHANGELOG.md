@@ -2,38 +2,53 @@
 
 Todos los cambios notables en este proyecto serán documentados en este archivo.
 
-El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/),
-y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+El formato se basa en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/), y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-12-03
+## [1.0.0] - 2025-12-07
 
 ### Añadido (Added)
 
-- **Creación de la Primera Versión Funcional de la Aplicación "Mi Tensión".**
+- **Creación de la Primera Versión Funcional de "Mi Tensión".**
+- **Arquitectura y Configuración:**
+    - Proyecto inicializado en Kotlin con Jetpack Compose y arquitectura MVVM.
+    - Integración de la base de datos **Room** para persistencia de datos con patrón Repositorio.
+    - Configuración de tests unitarios (`JUnit`, `MockK`, `Turbine`) y tests instrumentados (`Compose Test Rule`).
+    - Soporte para internacionalización (i18n) con textos en **Español, Inglés y Gallego**.
+
 - **Pantalla de Medición:**
-    - Interfaz para introducir la tensión sistólica y diastólica a través de un pop-up.
-    - Título dinámico que indica el período del día (Mañana, Tarde, Noche) y el número de medición actual (ej: "1/3").
-    - Lógica para limitar a 3 mediciones por período, con mensajes de error si el cupo está lleno.
-    - Validación de campos para asegurar que los datos son obligatorios.
-- **Persistencia de Datos:**
-    - Integración de la base de datos **Room** para almacenar todas las mediciones de forma persistente.
-    - Implementación del patrón `Repository` para abstraer el acceso a los datos.
-    - Generación de datos de prueba ("seeding") para el mes anterior, facilitando la verificación de funcionalidades.
+    - Interfaz para introducir la tensión sistólica y diastólica.
+    - Título dinámico que indica el período del día (Mañana, Tarde, Noche) y el progreso de las mediciones (ej: "Medición 1/3").
+    - Lógica de negocio para limitar a 3 mediciones por período. Si el cupo está lleno, se notifica al usuario y se impide guardar más registros.
+    - Validación de campos para asegurar que ambos valores son obligatorios antes de guardar.
+
 - **Pantalla de Calendario:**
-    - Vista de calendario mensual con capacidad para navegar entre meses.
-    - **Visualización de "Mapa de Calor"**: Cada día muestra 3 indicadores de color que representan la media de tensión de cada período (Mañana, Tarde, Noche).
+    - Vista de calendario mensual con navegación para cambiar de mes y año.
+    - **Visualización de "Mapa de Calor"**: Cada día en el calendario muestra 3 indicadores de color, representando la media de tensión de cada período (Mañana, Tarde, Noche), permitiendo una evaluación visual rápida.
+
 - **Pantalla de Detalle del Día:**
-    - Al pulsar un día en el calendario, se muestra una lista detallada de las mediciones de ese día.
-    - Los registros se agrupan por período (Mañana, Tarde, Noche).
-    - Se muestra una tarjeta destacada con la **media de tensión** para cada período.
-    - La tarjeta de la media cambia de color (verde, naranja, rojo) según la clasificación de la tensión basada en guías de salud (AHA).
-- **Arquitectura y Calidad:**
-    - Proyecto estructurado bajo la arquitectura **MVVM** (Model-View-ViewModel).
-    - Implementación de **Tests Unitarios** para la lógica de negocio (ViewModels, Utils) y **Tests Instrumentados** para la base de datos (DAO) y la UI (Compose).
-- **Internacionalización (i18n):**
-    - Soporte para tres idiomas: **Español (castellano), Inglés y Gallego**. Todos los textos de la UI se gestionan a través de archivos de recursos.
+    - Muestra una lista detallada de las mediciones de un día específico, agrupadas por período.
+    - Presenta una tarjeta destacada con la **media de tensión** para cada período.
+    - La tarjeta de la media cambia de color (verde, naranja, rojo, etc.) según la clasificación de la tensión basada en guías de salud, ofreciendo feedback visual inmediato.
+
+- **Recordatorios y Notificaciones:**
+    - Implementación de **WorkManager** para planificar recordatorios periódicos y fiables.
+    - Un `Worker` comprueba en segundo plano si el usuario ha completado sus mediciones para el período actual.
+    - Si faltan mediciones, se envía una notificación al usuario con un icono personalizado.
+    - Se solicita el permiso de notificaciones en Android 13+ para cumplir con las políticas del sistema.
 
 ### Cambiado (Changed)
 
-- Refactorización de la arquitectura para asegurar que los ViewModels no accedan directamente a los recursos del framework de Android.
+- **UI/UX:**
+    - Se ha ajustado el tamaño de la fuente en los botones para mejorar la visualización en idiomas con textos largos.
+    - Se ha simplificado la vista de detalle, mostrando "Alta" y "Baja" en lugar de las etiquetas completas para una interfaz más limpia.
+- **Arquitectura:**
+    - Refactorizada la comunicación UI-ViewModel para que los ViewModels no accedan directamente a recursos de Android (`R.string`, etc.), mejorando la capacidad de testeo y la separación de responsabilidades.
+- **Base de Datos:**
+    - Implementado un `Callback` de Room para poblar la base de datos con datos de prueba ("seeding") la primera vez que se crea, facilitando el desarrollo y la verificación de la UI.
+
+### Corregido (Fixed)
+
+- Resueltos múltiples problemas de configuración de Gradle relacionados con la incompatibilidad de versiones entre `Kotlin`, `KSP` y el compilador de `Compose`.
+- Solucionados errores de compilación en los archivos de recursos `strings.xml` debidos a una sintaxis XML incorrecta.
+- Corregidos los tests unitarios e instrumentados para asegurar su correcto funcionamiento y fiabilidad.
 

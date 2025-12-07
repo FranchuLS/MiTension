@@ -29,7 +29,11 @@
     <string name="guardado_con_exito">¡Medición gardada con éxito!</string>
     <string name="error_periodo_lleno">Xa completaches os 3 rexistros para este período. O seguinte período comeza en %s.</string>
     <string name="error_no_numerico">Erro: Valor numérico inválido.</string>
-    <string name="error_clase_view_model_desconocida">"Clase ViewModel desconocida"</string>
-</resources>
+    <string name="error_clase_view_model_desconocida">Clase de ViewModel descoñecida</string>
 
-    
+    <!--ALERTAS-->
+    <string name="canal_notificaciones_nombre">Recordatorios da Medición</string>
+    <string name="canal_notificaciones_descripcion">Notificacións para recordar tomar a tensión.</string>
+    <string name="notificacion_titulo">¡É hora de rexistrar a túa tensión!</string>
+    <string name="notificacion_texto">Aínda che faltan %d medicións para completar o período da %s.</string>
+</resources>

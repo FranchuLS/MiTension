@@ -80,6 +80,10 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // --- ALERTA (WorkManager) ---
+    implementation(libs.androidx.work.runtime.ktx)
+
+    // --- LIBRERÍAS DE TEST ---
     // ------------------- TESTS UNITARIOS (src/test) -------------------
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

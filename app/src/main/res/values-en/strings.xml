@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyPressure</string>
     <string name="periodo_manana">Morning</string>
@@ -25,9 +26,15 @@
 
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
-    <string name="guardado_con_exito">Save successfully!</string>
+    <string name="guardado_con_exito">Measurement saved successfully!</string>
     <string name="error_periodo_lleno">You have already completed the 3 entries for this period. The next period starts in %s.</string>
     <string name="error_no_numerico">Error: Invalid numeric value.</string>
-    <string name="error_clase_view_model_desconocida">"Unknown ViewModel class"</string>
+    <string name="error_clase_view_model_desconocida">Unknown ViewModel class</string>
+
+    <!--ALERTAS-->
+    <string name="canal_notificaciones_nombre">Measurement Reminders</string>
+    <string name="canal_notificaciones_descripcion">Notifications to remember to take your blood pressure.</string>
+    <string name="notificacion_titulo">It\'s time to record your blood pressure!</string>
+    <string name="notificacion_texto">You still have %d measurements left to complete the %s period.</string>
 </resources>
     

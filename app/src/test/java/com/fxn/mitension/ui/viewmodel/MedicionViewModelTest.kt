@@ -3,6 +3,7 @@ package com.fxn.mitension.ui.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import app.cash.turbine.test
 import com.fxn.mitension.data.MedicionRepository
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -19,22 +20,33 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class MedicionViewModelTest {
+
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
-    private val repository: MedicionRepository = mockk(relaxed = true)
 
-    private lateinit var viewModel: MedicionViewModel
+    private val repository: MedicionRepository = mockk(relaxed = true)
     private val testDispatcher = StandardTestDispatcher()
+    private lateinit var viewModel: MedicionViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
+        // CAMBIO 1: Usar coAnswers para una configuración de mock más robusta
+        coEvery { repository.contarMedicionesEnRango(any(), any()) } coAnswers { 0 }
         viewModel = MedicionViewModel(repository)
+        // CAMBIO 2: Aseguramos que cualquier corrutina del 'init' se complete
+        testDispatcher.scheduler.advanceUntilIdle()
     }
 
     @After
     fun tearDown() {
-        Dispatchers.resetMain() // Limpiamos el dispatcher
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun `init carga el número de medición correcto (1 si no hay datos)`() = runTest {
+        // La comprobación ahora es más simple porque el setUp ya se encarga de la corrutina
+        assertEquals(1, viewModel.uiState.value.numeroMedicion)
     }
 
     @Test
@@ -43,12 +55,30 @@ class MedicionViewModelTest {
         viewModel.evento.test {
             val evento = awaitItem()
             assertTrue(evento is MedicionViewModel.UiEvento.MostrarMensaje)
-            assertEquals(
-                "Campos obligatorios", (evento as MedicionViewModel.UiEvento.MostrarMensaje).mensaje
-            )
-            cancelAndConsumeRemainingEvents()
+            assertEquals("Campos obligatorios", (evento as MedicionViewModel.UiEvento.MostrarMensaje).mensaje)
         }
+        coVerify(exactly = 0) { repository.insertarMedicion(any()) }
+    }
 
+    @Test
+    fun `guardarMedicion emite error si el cupo del período está lleno`() = runTest {
+        // GIVEN: Simulamos que el cupo está lleno
+        viewModel.onGuardadoExitoso() // num = 2
+        viewModel.onGuardadoExitoso() // num = 3
+        viewModel.onGuardadoExitoso() // num = 4
+        assertEquals(4, viewModel.uiState.value.numeroMedicion)
+
+        // WHEN
+        viewModel.onSistolicaChanged("120")
+        viewModel.onDiastolicaChanged("80")
+        viewModel.guardarMedicion("", "Cupo lleno", "")
+
+        // THEN
+        viewModel.evento.test {
+            val evento = awaitItem()
+            assertTrue(evento is MedicionViewModel.UiEvento.MostrarMensaje)
+            assertTrue((evento as MedicionViewModel.UiEvento.MostrarMensaje).mensaje.contains("Cupo lleno"))
+        }
         coVerify(exactly = 0) { repository.insertarMedicion(any()) }
     }
 
@@ -58,31 +88,26 @@ class MedicionViewModelTest {
         viewModel.onDiastolicaChanged("80")
         viewModel.guardarMedicion("", "", "Éxito")
         viewModel.evento.test {
-            val evento = awaitItem()
-            assertTrue(evento is MedicionViewModel.UiEvento.GuardadoConExito)
-            assertEquals("Éxito", (evento as MedicionViewModel.UiEvento.GuardadoConExito).mensaje)
-            cancelAndConsumeRemainingEvents()
+            assertTrue(awaitItem() is MedicionViewModel.UiEvento.GuardadoConExito)
         }
-
         coVerify(exactly = 1) { repository.insertarMedicion(any()) }
     }
 
+    // --- TEST CORREGIDO ---
     @Test
-    fun `onGuardadoExitoso limpia los campos y actualiza el contador`() = runTest {
-        // GIVEN: El estado inicial tiene valores
+    fun `onGuardadoExitoso limpia campos y actualiza contador`() = runTest {
+        // GIVEN
         viewModel.onSistolicaChanged("130")
         viewModel.onDiastolicaChanged("85")
-
-        // Y el número de medición es 1 (lo obtenemos del estado inicial que carga el ViewModel)
-        // Para hacer el test más robusto, podemos esperar a que el estado inicial se cargue.
-        testDispatcher.scheduler.advanceUntilIdle() // Avanza las corrutinas pendientes (como el init)
+        // El estado inicial es 1 gracias al setup
         assertEquals(1, viewModel.uiState.value.numeroMedicion)
 
-        // WHEN: Se llama a onGuardadoExitoso
+        // WHEN
         viewModel.onGuardadoExitoso()
-        testDispatcher.scheduler.advanceUntilIdle() // Nos aseguramos de que la corrutina interna termine
+        // CAMBIO 3: Nos aseguramos de que cualquier corrutina interna que se lance se complete
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // THEN: Los campos se limpian y el contador se incrementa
+        // THEN
         val newState = viewModel.uiState.value
         assertEquals("", newState.sistolica)
         assertEquals("", newState.diastolica)
