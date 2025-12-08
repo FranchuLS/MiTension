@@ -23,6 +23,7 @@
     <string name="mes_anterior">Previous Month</string>
     <string name="mes_siguiente">Next Month</string>
     <string name="titulo_mediciones_completas">You have completed the measurements for %1$s</string>
+    <string name="titulo_calendario">My Blood Pressure Calendar</string>
 
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
@@ -36,5 +37,17 @@
     <string name="canal_notificaciones_descripcion">Notifications to remember to take your blood pressure.</string>
     <string name="notificacion_titulo">It\'s time to record your blood pressure!</string>
     <string name="notificacion_texto">You still have %d measurements left to complete the %s period.</string>
+
+    <!-- Textos para Menú y Leyenda -->
+    <string name="menu_descripcion">Options menu</string>
+    <string name="menu_leyenda_colores">Color legend</string>
+    <string name="leyenda_titulo">Legend of Tension</string>
+    <string name="leyenda_normal">Normal</string>
+    <string name="leyenda_elevada">Elevated</string>
+    <string name="leyenda_alta_1">High (Hypertension 1)</string>
+    <string name="leyenda_alta_2">High (Hypertension 2)</string>
+    <string name="leyenda_crisis">Hypertensive Crisis</string>
+    <string name="leyenda_baja">Low (Hypotension)</string>
+    <string name="cerrar">Close</string>
 </resources>
     
