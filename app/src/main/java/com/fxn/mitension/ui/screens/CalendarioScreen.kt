@@ -3,9 +3,11 @@ package com.fxn.mitension.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,11 +21,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.ui.viewmodel.CalendarioViewModel
 import java.time.DayOfWeek
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.window.Dialog
 import com.fxn.mitension.R
 import com.fxn.mitension.data.AppDatabase
 import com.fxn.mitension.data.MedicionRepository
 import com.fxn.mitension.data.ResumenDiario
 import com.fxn.mitension.ui.viewmodel.CalendarioViewModelFactory
+import com.fxn.mitension.util.EstadoTension
 import com.fxn.mitension.util.clasificarTension
 import com.fxn.mitension.util.obtenerColorPorEstado
 import java.time.YearMonth
@@ -32,6 +36,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarioScreen(
     onNavigateToMedicion: () -> Unit,
@@ -53,7 +58,41 @@ fun CalendarioScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    var menuVisible by remember { mutableStateOf(false) }
+    var dialogoLeyendaVisible by remember { mutableStateOf(false) }
+
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.titulo_calendario)) },
+                actions = {
+                    // Botón del menú de la leyenda
+                    IconButton(onClick = { menuVisible = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(id = R.string.menu_descripcion)
+                        )
+                    }
+                    // Menú desplegable
+                    DropdownMenu(
+                        expanded = menuVisible,
+                        onDismissRequest = { menuVisible = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.menu_leyenda_colores)) },
+                            onClick = {
+                                menuVisible = false
+                                dialogoLeyendaVisible = true
+                            }
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                )
+            )
+        },
         bottomBar = {
             BottomAppBar {
                 Row(
@@ -85,6 +124,10 @@ fun CalendarioScreen(
                 }
             )
         }
+    }
+    // Diálogo de leyenda
+    if (dialogoLeyendaVisible) {
+        DialogoLeyenda(onDismiss = { dialogoLeyendaVisible = false })
     }
 }
 
@@ -129,7 +172,7 @@ fun CalendarioGrid(
 ) {
     val diasEnMes = anioMes.lengthOfMonth()
     val primerDiaDelMes = anioMes.atDay(1).dayOfWeek
-    val offset = primerDiaDelMes.value - 1
+    val offset = primerDiaDelMes.value
 
     Column {
         // Cabecera con los días de la semana
@@ -261,5 +304,82 @@ fun CeldaDiaCalendario(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun DialogoLeyenda(onDismiss: () -> Unit) {
+    // Usamos las mismas funciones de la utilidad que creamos para obtener los colores
+    val colorBaja = obtenerColorPorEstado(estado = EstadoTension.BAJA)
+    val colorNormal = obtenerColorPorEstado(estado = EstadoTension.NORMAL)
+    val colorElevada = obtenerColorPorEstado(estado = EstadoTension.ELEVADA)
+    val colorAlta1 = obtenerColorPorEstado(estado = EstadoTension.ALTA_1)
+    val colorAlta2 = obtenerColorPorEstado(estado = EstadoTension.ALTA_2)
+    val colorCrisis = obtenerColorPorEstado(estado = EstadoTension.CRISIS_HIPERTENSIVA)
+
+    Dialog(onDismissRequest = onDismiss) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = MaterialTheme.shapes.large
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.leyenda_titulo),
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Lista de leyendas
+                LeyendaItem(color = colorBaja, texto = stringResource(id = R.string.leyenda_baja))
+                LeyendaItem(
+                    color = colorNormal,
+                    texto = stringResource(id = R.string.leyenda_normal)
+                )
+                LeyendaItem(
+                    color = colorElevada,
+                    texto = stringResource(id = R.string.leyenda_elevada)
+                )
+                LeyendaItem(
+                    color = colorAlta1,
+                    texto = stringResource(id = R.string.leyenda_alta_1)
+                )
+                LeyendaItem(
+                    color = colorAlta2,
+                    texto = stringResource(id = R.string.leyenda_alta_2)
+                )
+                LeyendaItem(
+                    color = colorCrisis,
+                    texto = stringResource(id = R.string.leyenda_crisis)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
+                    Text(stringResource(id = R.string.cerrar))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun LeyendaItem(color: Color, texto: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 4.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(20.dp)
+                .background(color, CircleShape)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(text = texto, style = MaterialTheme.typography.bodyLarge)
     }
 }

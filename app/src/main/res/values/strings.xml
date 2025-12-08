@@ -23,6 +23,7 @@
     <string name="mes_anterior">Mes Anterior</string>
     <string name="mes_siguiente">Mes Siguiente</string>
     <string name="titulo_mediciones_completas">Ya has completado las mediciones de %1$s</string>
+    <string name="titulo_calendario">Calendario de Mi Tensión</string>
 
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Ambos campos, Alta y Baja, son obligatorios.</string>
@@ -36,6 +37,18 @@
     <string name="canal_notificaciones_descripcion">Notificaciones para recordar tomar la tensión.</string>
     <string name="notificacion_titulo">¡Es hora de registrar tu tensión!</string>
     <string name="notificacion_texto">Aún te faltan %d mediciones para completar el período de la %s.</string>
+
+    <!-- Textos para Menú y Leyenda -->
+    <string name="menu_descripcion">Menú de opciones</string>
+    <string name="menu_leyenda_colores">Leyenda de colores</string>
+    <string name="leyenda_titulo">Leyenda de Tensión</string>
+    <string name="leyenda_normal">Normal</string>
+    <string name="leyenda_elevada">Elevada</string>
+    <string name="leyenda_alta_1">Alta (Hipertensión 1)</string>
+    <string name="leyenda_alta_2">Alta (Hipertensión 2)</string>
+    <string name="leyenda_crisis">Crisis Hipertensiva</string>
+    <string name="leyenda_baja">Baja (Hipotensión)</string>
+    <string name="cerrar">Cerrar</string>
 </resources>
 
     

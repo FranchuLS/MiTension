@@ -144,7 +144,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     },
                     modifier = Modifier
                         .weight(3f)
-                        .height(48.dp)
+                        .height(60.dp)
                 ) {
                     Text(
                         stringResource(id = R.string.guardar),
@@ -155,7 +155,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     onClick = { onNavigateToCalendario() },
                     modifier = Modifier
                         .weight(3f)
-                        .height(48.dp)
+                        .height(60.dp)
                 ) {
                     Text(
                         stringResource(id = R.string.ver_calendario),
