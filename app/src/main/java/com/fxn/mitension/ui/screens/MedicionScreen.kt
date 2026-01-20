@@ -1,36 +1,37 @@
 package com.fxn.mitension.ui.screens
 
+import android.graphics.drawable.Drawable
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.ui.viewmodel.MedicionViewModel
 import com.fxn.mitension.R
 import com.fxn.mitension.data.MedicionRepository
 import com.fxn.mitension.ui.viewmodel.MedicionViewModelFactory
 import com.fxn.mitension.data.AppDatabase
+import com.fxn.mitension.ui.components.TensionCard
+import com.fxn.mitension.ui.components.TensionInputDialog
 import com.fxn.mitension.util.PeriodoDelDia
 import kotlinx.coroutines.flow.collectLatest
 
@@ -65,15 +66,27 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
         PeriodoDelDia.TARDE -> stringResource(id = R.string.periodo_tarde)
         PeriodoDelDia.NOCHE -> stringResource(id = R.string.periodo_noche)
     }
-
-    val tituloCompleto = if (uiState.numeroMedicion > 3) {
+    val tituloPeriodo = stringResource(id = R.string.titulo_periodo, periodoNombre)
+    val titulomedicion = if (uiState.numeroMedicion > 3) {
         stringResource(id = R.string.titulo_mediciones_completas, periodoNombre)
     } else {
-        stringResource(
-            id = R.string.titulo_medicion,
-            periodoNombre,
-            uiState.numeroMedicion
-        )
+        stringResource(id = R.string.titulo_medicion, uiState.numeroMedicion)
+    }
+
+    // Determinamos qué icono usar según el periodo
+    val iconoPeriodo = when (uiState.periodo) {
+        PeriodoDelDia.MAÑANA -> R.drawable.ic_sunrise
+        PeriodoDelDia.TARDE -> R.drawable.ic_sun
+        PeriodoDelDia.NOCHE -> R.drawable.ic_moon
+        else -> R.drawable.ic_sun // Por si acaso
+    }
+
+    // Color del icono (opcional: puedes variarlo según el periodo)
+    val colorIcono = when (uiState.periodo) {
+        PeriodoDelDia.MAÑANA -> Color(0xFFFF7043) // Naranja atardecer/amanecer
+        PeriodoDelDia.TARDE -> Color(0xFFFFD966)  // Amarillo sol
+        PeriodoDelDia.NOCHE -> Color(0xFF8EACCD)  // Azul luna
+        else -> Color(0xFFFFD966)
     }
 
     LaunchedEffect(key1 = true) {
@@ -90,82 +103,171 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
             }
         }
     }
-
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(tituloCompleto) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                )
-            )
+        containerColor = Color(0xFFFFFBF1), // Fondo Crema
+        //Botones parte inferior.
+        bottomBar = {
+            BottomAppBar {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Button(
+                        onClick = {
+                            viewModel.guardarMedicion(
+                                mensajeErrorCampos,
+                                mensajeErrorPeriodoLleno,
+                                mensajeExito
+                            )
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
+                    ) {
+                        Text(stringResource(id = R.string.guardar), fontWeight = FontWeight.Bold)
+                    }
+
+                    Button(
+                        onClick = onNavigateToCalendario,
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
+                    ) {
+                        Text(
+                            stringResource(id = R.string.ver_calendario), fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+                .background(Color(0xFFFFFBF1)),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Campo Sistólica
-            TensionDisplay(
-                label = stringResource(id = R.string.tension_alta_label),
-                valor = uiState.sistolica,
-                onClick = { mostrarPopupSistolica = true }
-            )
-
-            // Campo Diastólica
-            TensionDisplay(
-                label = stringResource(id = R.string.tension_baja_label),
-                valor = uiState.diastolica,
-                onClick = { mostrarPopupDiastolica = true }
-            )
-
-            Spacer(modifier = Modifier.weight(1f)) // Empuja los botones hacia abajo
-
-            // Botones inferiores
-            Row(
+            Surface(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                shadowElevation = 6.dp,
+                shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp)
             ) {
-                Button(
-                    onClick = {
-                        viewModel.guardarMedicion(
-                            mensajeErrorCampos,
-                            mensajeErrorPeriodoLleno,
-                            mensajeExito
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp), // Padding inferior de la cabecera
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = 16.dp,
+                                bottom = 24.dp,
+                                start = 20.dp,
+                                end = 16.dp
+                            ), // Espaciado elegante
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(id = iconoPeriodo),
+                            contentDescription = null,
+                            modifier = Modifier.size(50.dp),
+                            tint = colorIcono
                         )
-                    },
-                    modifier = Modifier
-                        .weight(3f)
-                        .height(60.dp)
-                ) {
-                    Text(
-                        stringResource(id = R.string.guardar),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                        ) {
+                            Text(
+                                text = tituloPeriodo,
+                                style = MaterialTheme.typography.headlineLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = 0.8.sp
+                                ),
+                                color = Color(0xFF4A4A4A)
+                            )
+
+                            Text(
+                                text = titulomedicion,
+                                style = MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Normal,
+                                    letterSpacing = 0.6.sp
+                                ),
+                                color = Color(0xFFC2185B)
+                            )
+                        }
+                    }
+                    // Tarjeta de consejo
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 0.dp),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color(0xFFDDE6ED).copy(
+                                alpha = 0.4f
+                            )
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.Info,
+                                contentDescription = null,
+                                tint = Color(0xFF8EACCD)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = stringResource(id = R.string.recuerdaesperar),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFF505050)
+                            )
+                        }
+                    }
                 }
-                Button(
-                    onClick = { onNavigateToCalendario() },
-                    modifier = Modifier
-                        .weight(3f)
-                        .height(60.dp)
-                ) {
-                    Text(
-                        stringResource(id = R.string.ver_calendario),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
+            }
+
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp)
+                    .padding(top = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Tarjetas de tensión (Sistólica y Diastólica)
+                TensionCard(
+                    label = stringResource(id = R.string.tension_alta_label),
+                    valor = uiState.sistolica,
+                    colorAcento = Color(0xFFFF8A71),
+                    iconRes = R.drawable.ic_blood_drop,
+                    onClick = { mostrarPopupSistolica = true }
+                )
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                TensionCard(
+                    label = stringResource(id = R.string.tension_baja_label),
+                    valor = uiState.diastolica,
+                    colorAcento = Color(0xFF8EACCD),
+                    iconRes = R.drawable.mi_tension_alerta_24,
+                    onClick = { mostrarPopupDiastolica = true }
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
-
     // Pop-ups
     if (mostrarPopupSistolica) {
         TensionInputDialog(
@@ -189,108 +291,5 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 mostrarPopupDiastolica = false
             }
         )
-    }
-}
-
-
-@Composable
-fun TensionDisplay(label: String, valor: String, onClick: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.headlineSmall
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(0.7f)
-                .height(120.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.shapes.large)
-                .clickable(onClick = onClick)
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = if (valor.isEmpty()) stringResource(id = R.string.pulsa_para_anadir) else valor,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold
-                ),
-                color = if (valor.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Composable
-fun TensionInputDialog(
-    titulo: String,
-    valorInicial: String,
-    onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
-) {
-    var text by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = valorInicial,
-                selection = TextRange(valorInicial.length)
-            )
-        )
-    }
-    val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
-
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Column(
-                modifier = Modifier.padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(titulo, style = MaterialTheme.typography.headlineSmall)
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedTextField(
-                    value = text,
-                    onValueChange = { newValue ->
-                        // Permitimos solo números y hasta 3 dígitos
-                        if (newValue.text.length <= 3 && newValue.text.all { it.isDigit() }) {
-                            text = newValue
-                        }
-                    },
-                    modifier = Modifier.focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            onConfirm(text.text)
-                            focusManager.clearFocus()
-                        }
-                    ),
-                    singleLine = true,
-                    textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center)
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        onConfirm(text.text)
-                        focusManager.clearFocus()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                ) {
-                    Text(
-                        stringResource(id = R.string.confirmar),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        }
-    }
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
     }
 }

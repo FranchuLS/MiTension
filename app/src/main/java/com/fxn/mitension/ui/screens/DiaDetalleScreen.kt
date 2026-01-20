@@ -3,6 +3,7 @@ package com.fxn.mitension.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,12 +24,10 @@ import com.fxn.mitension.ui.viewmodel.DiaDetalleViewModelFactory
 import com.fxn.mitension.util.PeriodoDelDia
 import java.time.Instant
 import java.time.ZoneId
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import com.fxn.mitension.util.clasificarTension
 import com.fxn.mitension.util.obtenerColorPorEstado
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +52,13 @@ fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = onNavigateBack) {
+                    Button(
+                        onClick = onNavigateBack,
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
                         Text(stringResource(id = R.string.volver_al_calendario))
                     }
                 }
@@ -82,7 +87,8 @@ fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
                     // Calculamos las medias a partir de la lista.
                     // Usamos average() y lo redondeamos a Int.
                     val mediaSistolica = medicionesDelPeriodo.map { it.sistolica }.average().toInt()
-                    val mediaDiastolica = medicionesDelPeriodo.map { it.diastolica }.average().toInt()
+                    val mediaDiastolica =
+                        medicionesDelPeriodo.map { it.diastolica }.average().toInt()
                     // Clasificamos la media para obtener su estado (Normal, Alta, etc.)
                     val estadoDeLaTension = clasificarTension(mediaSistolica, mediaDiastolica)
 

@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -62,6 +63,7 @@ fun CalendarioScreen(
     var dialogoLeyendaVisible by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = Color(0xFFFFFBF1),
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(id = R.string.titulo_calendario)) },
@@ -86,11 +88,7 @@ fun CalendarioScreen(
                             }
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                )
+                }
             )
         },
         bottomBar = {
@@ -99,7 +97,13 @@ fun CalendarioScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Button(onClick = onNavigateToMedicion) {
+                    Button(
+                        onClick = onNavigateToMedicion,
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(16.dp)
+                    ) {
                         Text(stringResource(id = R.string.anadir_nuevo_registro))
                     }
                 }
@@ -359,7 +363,11 @@ fun DialogoLeyenda(onDismiss: () -> Unit) {
 
                 Button(
                     onClick = onDismiss,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(0.5f)
+                        .height(40.dp),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(stringResource(id = R.string.cerrar))
                 }
