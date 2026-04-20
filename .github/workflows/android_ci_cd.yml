@@ -2,7 +2,7 @@ name: Android CI/CD
 
 on:
   push:
-    branches: [ "main" ] # Se ejecuta al subir a la rama main
+    branches: [ "master" ] # Se ejecuta al subir a la rama master
 
 jobs:
   quality:
