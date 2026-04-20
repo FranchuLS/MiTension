@@ -1,29 +1,30 @@
 [versions]
 # --- Plugins ---
-agp = "8.13.1"
+agp = "8.7.3"
 kotlin = "1.9.23"
-ksp = "1.9.23-1.0.19" # Versión de KSP alineada con Kotlin
+ksp = "1.9.23-1.0.19"
+sonar = "5.0.0.4638"
 
 # --- Dependencias Principales ---
-coreKtx = "1.16.0"
-activityCompose = "1.12.0"
-composeBom = "2024.09.00"
-material3 = "1.2.1"
-navigation = "2.7.7"
+coreKtx = "1.13.1"
+activityCompose = "1.9.3"
+composeBom = "2024.11.00"
+material3 = "1.3.1"
+navigation = "2.8.4"
 room = "2.6.1"
 
-# --- Versión UNIFICCADA para todas las librerías de Lifecycle ---
-lifecycle = "2.10.0"
+# --- Versión UNIFICADA para todas las librerías de Lifecycle ---
+lifecycle = "2.8.7"
 # --- Alertas ---
-workmanager = "2.9.0"
+workmanager = "2.10.0"
 
 # --- Dependencias de Test ---
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-kotlinx-coroutines-test = "1.7.3"
-mockk = "1.13.11"
-turbine = "1.1.0"
+kotlinx-coroutines-test = "1.9.0"
+mockk = "1.13.13"
+turbine = "1.2.0"
 androidx-arch-core-testing = "2.2.0"
 
 [libraries]
@@ -73,4 +74,4 @@ androidx-navigation-testing = { group = "androidx.navigation", name = "navigatio
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
+sonar = { id = "org.sonarqube", version.ref = "sonar" }

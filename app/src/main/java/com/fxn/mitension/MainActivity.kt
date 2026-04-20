@@ -14,7 +14,10 @@ import androidx.core.content.ContextCompat
 import com.fxn.mitension.ui.AppNavigation
 import com.fxn.mitension.ui.theme.MiTensionDosTheme
 import android.Manifest
+import android.R.style.Theme
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import com.fxn.mitension.ui.theme.MiTensionTheme
 
 class MainActivity : ComponentActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
@@ -44,8 +47,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         pedirPermisoDeNotificaciones()
+        enableEdgeToEdge()
         setContent {
-            MiTensionDosTheme {
+            MiTensionTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background

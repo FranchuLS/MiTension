@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">MyPressure</string>
+    <string name="app_name">My Pressure</string>
     <string name="periodo_manana">Morning</string>
     <string name="periodo_tarde">Afternoon</string>
     <string name="periodo_noche">Night</string>
     <string name="media_label">Average</string>
-    <string name="titulo_medicion">%1$s - Measurement %2$d/3</string>
+    <string name="titulo_periodo">%1$s Session</string>
+    <string name="titulo_medicion">Measurement %1$d/3</string>
     <string name="tension_alta_label">High (systolic)</string>
     <string name="tension_alta_label_corta">High</string>
     <string name="tension_baja_label">Low (diastolic)</string>
@@ -13,6 +14,7 @@
     <string name="dialog_alta_titulo">Enter High (systolic)</string>
     <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
     <string name="pulsa_para_anadir">Tap to add</string>
+    <string name="recuerdaesperar">Remember to wait 5 minutes at rest before taking your measurement.</string>
     <string name="guardar">Save</string>
     <string name="ver_calendario">View Calendar</string>
     <string name="confirmar">Confirm</string>

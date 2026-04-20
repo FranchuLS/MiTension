@@ -5,7 +5,8 @@
     <string name="periodo_tarde">Tarde</string>
     <string name="periodo_noche">Noite</string>
     <string name="media_label">Media</string>
-    <string name="titulo_medicion">%1$s - Medición %2$d/3</string>
+    <string name="titulo_periodo">%1$s Sesión</string>
+    <string name="titulo_medicion">Medición %1$d/3</string>
     <string name="tension_alta_label">A Alta (sistólica)</string>
     <string name="tension_alta_label_corta">A Alta</string>
     <string name="tension_baja_label">A Baixa (diastólica)</string>
@@ -13,6 +14,7 @@
     <string name="dialog_alta_titulo">Introduce a Alta (sistólica)</string>
     <string name="dialog_baja_titulo">Introduce a Baixa (diastólica)</string>
     <string name="pulsa_para_anadir">Preme para engadir</string>
+    <string name="recuerdaesperar">Lembra agardar 5 minutos en repouso antes de tomar a medida.</string>
     <string name="guardar">Gardar</string>
     <string name="ver_calendario">Ver Calendario</string>
     <string name="confirmar">Confirmar</string>
