@@ -1,4 +1,9 @@
 [versions]
+# --- SDK Versions ---
+minSdk = "31"
+targetSdk = "36"
+compileSdk = "36"
+
 # --- Plugins ---
 agp = "8.7.3"
 kotlin = "1.9.23"
