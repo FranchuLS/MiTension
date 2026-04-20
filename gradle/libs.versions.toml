@@ -1,11 +1,11 @@
 [versions]
 # --- SDK Versions ---
 minSdk = "31"
-targetSdk = "35"
-compileSdk = "35"
+targetSdk = "36"
+compileSdk = "36"
 
 # --- Plugins ---
-agp = "8.7.2"
+agp = "8.7.3"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.26"
 sonar = "5.0.0.4638"
@@ -22,7 +22,7 @@ room = "2.6.1"
 lifecycle = "2.8.7"
 workmanager = "2.10.0"
 
-# --- Tests ---
+# --- Dependencias de Test ---
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -59,7 +59,6 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-
 # --- Alertas ---
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workmanager" }
 
@@ -78,6 +77,6 @@ androidx-navigation-testing = { group = "androidx.navigation", name = "navigatio
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 sonar = { id = "org.sonarqube", version.ref = "sonar" }
