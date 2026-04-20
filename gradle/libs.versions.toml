@@ -3,6 +3,7 @@
 agp = "8.13.1"
 kotlin = "1.9.23"
 ksp = "1.9.23-1.0.19" # Versión de KSP alineada con Kotlin
+sonar = "5.1.0.4882"
 
 # --- Dependencias Principales ---
 coreKtx = "1.16.0"
@@ -73,4 +74,5 @@ androidx-navigation-testing = { group = "androidx.navigation", name = "navigatio
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+sonar = { id = "org.sonarqube", version.ref = "sonar" }
 
