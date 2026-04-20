@@ -1,17 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.fxn.mitension"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.fxn.mitension"
-        minSdk = 31
-        targetSdk = 36
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         versionCode = 1
         versionName = "1.0"
@@ -65,11 +66,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        // Versión del compilador de Compose compatible con Kotlin 1.9.23
-        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     packaging {
