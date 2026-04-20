@@ -1,15 +1,42 @@
+# Build artifacts
+/build
+/.gradle
+/app/build
+/app/release
+/captures
+
+# IDE files
 *.iml
-.gradle
-/local.properties
-/.idea/caches
+/.idea/workspace.xml
 /.idea/libraries
 /.idea/modules.xml
-/.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
+/.idea/caches
+/.idea/shelf
+/.idea/deploymentTargetSelector.xml
+
+# Local configuration files
+/local.properties
+
+# Log files
+*.log
+
+# OS-specific files
 .DS_Store
-/build
-/captures
+Thumbs.db
+
+# Android Studio specific
+.navigation/
 .externalNativeBuild
-.cxx
-local.properties
+.cxx/
+
+# Gradle generated
+.gradle/
+build/
+
+# Kotlin / Compose specific
+*.hprof
+
+# Archivos de prueba locales
+/app/src/main/java/com/fxn/mitension/data/NoSubir.kt
