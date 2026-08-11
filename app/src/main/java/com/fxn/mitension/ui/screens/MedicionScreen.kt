@@ -279,7 +279,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     if (mostrarPopupSistolica) {
         TensionInputDialog(
             titulo = stringResource(id = R.string.dialog_alta_titulo),
-            valorInicial = uiState.sistolica.ifEmpty { "120" },
+            valorInicial = uiState.sistolica,
             onDismiss = { mostrarPopupSistolica = false },
             onConfirm = { valor ->
                 viewModel.onSistolicaChanged(valor)
@@ -291,7 +291,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     if (mostrarPopupDiastolica) {
         TensionInputDialog(
             titulo = stringResource(id = R.string.dialog_baja_titulo),
-            valorInicial = uiState.diastolica.ifEmpty { "80" },
+            valorInicial = uiState.diastolica,
             onDismiss = { mostrarPopupDiastolica = false },
             onConfirm = { valor ->
                 viewModel.onDiastolicaChanged(valor)
@@ -303,7 +303,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     if (mostrarPopupPulso) {
         TensionInputDialog(
             titulo = stringResource(id = R.string.dialog_pulso_titulo),
-            valorInicial = uiState.pulso.ifEmpty { "70" },
+            valorInicial = uiState.pulso,
             onDismiss = { mostrarPopupPulso = false },
             onConfirm = { valor ->
                 viewModel.onPulsoChanged(valor)

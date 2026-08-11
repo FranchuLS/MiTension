@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fxn.mitension.data.Medicion
 import com.fxn.mitension.data.MedicionRepository
-import com.fxn.mitension.util.PeriodoDelDia
 import com.fxn.mitension.util.obtenerPeriodoActual
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -92,7 +91,7 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
 
             } catch (e: NumberFormatException) {
                 // Esto es un seguro por si algo muy raro pasa y el texto no es un número
-                _evento.emit(UiEvento.MostrarMensaje("Error: Invalid numeric value."))
+                _evento.emit(UiEvento.MostrarMensaje("Error: Invalid numeric value. " + e.message))
             }
         }
     }
