@@ -11,8 +11,11 @@
     <string name="tension_alta_label_corta">High</string>
     <string name="tension_baja_label">Low (diastolic)</string>
     <string name="tension_baja_label_corta">Low</string>
+    <string name="pulso_label">Pulse</string>
+    <string name="pulso_label_corta">Pul</string>
     <string name="dialog_alta_titulo">Enter High (systolic)</string>
     <string name="dialog_baja_titulo">Enter Low (diastolic)</string>
+    <string name="dialog_pulso_titulo">Enter Pulse (ppm)</string>
     <string name="pulsa_para_anadir">Tap to add</string>
     <string name="recuerdaesperar">Remember to wait 5 minutes at rest before taking your measurement.</string>
     <string name="guardar">Save</string>

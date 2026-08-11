@@ -1,14 +1,9 @@
 package com.fxn.mitension.ui.screens
 
-import android.graphics.drawable.Drawable
 import android.widget.Toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
@@ -55,6 +50,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     val uiState by viewModel.uiState
     var mostrarPopupSistolica by remember { mutableStateOf(false) }
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
+    var mostrarPopupPulso by remember { mutableStateOf(false) }
 
     // Añadimos el nuevo mensaje de éxito
     val mensajeErrorCampos = stringResource(id = R.string.error_campos_obligatorios)
@@ -78,7 +74,6 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
         PeriodoDelDia.MAÑANA -> R.drawable.ic_sunrise
         PeriodoDelDia.TARDE -> R.drawable.ic_sun
         PeriodoDelDia.NOCHE -> R.drawable.ic_moon
-        else -> R.drawable.ic_sun // Por si acaso
     }
 
     // Color del icono (opcional: puedes variarlo según el periodo)
@@ -86,7 +81,6 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
         PeriodoDelDia.MAÑANA -> Color(0xFFFF7043) // Naranja atardecer/amanecer
         PeriodoDelDia.TARDE -> Color(0xFFFFD966)  // Amarillo sol
         PeriodoDelDia.NOCHE -> Color(0xFF8EACCD)  // Azul luna
-        else -> Color(0xFFFFD966)
     }
 
     LaunchedEffect(key1 = true) {
@@ -254,7 +248,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     onClick = { mostrarPopupSistolica = true }
                 )
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 TensionCard(
                     label = stringResource(id = R.string.tension_baja_label),
@@ -262,6 +256,19 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     colorAcento = Color(0xFF8EACCD),
                     iconRes = R.drawable.mi_tension_alerta_24,
                     onClick = { mostrarPopupDiastolica = true }
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Nueva tarjeta para el Pulso (más bajita)
+                TensionCard(
+                    label = stringResource(id = R.string.pulso_label),
+                    valor = uiState.pulso,
+                    colorAcento = Color(0xFF4CAF50), // Un verde suave para el pulso
+                    iconRes = R.drawable.ic_blood_drop, // Podrías usar otro icono si tienes uno de corazón
+                    unidad = "ppm",
+                    paddingVertical = 12.dp, // Más bajita
+                    onClick = { mostrarPopupPulso = true }
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -272,7 +279,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     if (mostrarPopupSistolica) {
         TensionInputDialog(
             titulo = stringResource(id = R.string.dialog_alta_titulo),
-            valorInicial = uiState.sistolica.ifEmpty { "1" },
+            valorInicial = uiState.sistolica.ifEmpty { "120" },
             onDismiss = { mostrarPopupSistolica = false },
             onConfirm = { valor ->
                 viewModel.onSistolicaChanged(valor)
@@ -284,11 +291,23 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     if (mostrarPopupDiastolica) {
         TensionInputDialog(
             titulo = stringResource(id = R.string.dialog_baja_titulo),
-            valorInicial = uiState.diastolica.ifEmpty { "0" },
+            valorInicial = uiState.diastolica.ifEmpty { "80" },
             onDismiss = { mostrarPopupDiastolica = false },
             onConfirm = { valor ->
                 viewModel.onDiastolicaChanged(valor)
                 mostrarPopupDiastolica = false
+            }
+        )
+    }
+
+    if (mostrarPopupPulso) {
+        TensionInputDialog(
+            titulo = stringResource(id = R.string.dialog_pulso_titulo),
+            valorInicial = uiState.pulso.ifEmpty { "70" },
+            onDismiss = { mostrarPopupPulso = false },
+            onConfirm = { valor ->
+                viewModel.onPulsoChanged(valor)
+                mostrarPopupPulso = false
             }
         )
     }

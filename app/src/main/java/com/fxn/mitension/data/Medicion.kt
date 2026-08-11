@@ -9,6 +9,6 @@ data class Medicion(
     val id: Int = 0,
     val sistolica: Int,
     val diastolica: Int,
+    val pulso: Int? = null,
     val timestamp: Long = System.currentTimeMillis()
 )
-

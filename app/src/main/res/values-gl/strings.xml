@@ -11,8 +11,11 @@
     <string name="tension_alta_label_corta">A Alta</string>
     <string name="tension_baja_label">A Baixa (diastólica)</string>
     <string name="tension_baja_label_corta">A Baixa</string>
+    <string name="pulso_label">Pulso</string>
+    <string name="pulso_label_corta">Pul</string>
     <string name="dialog_alta_titulo">Introduce a Alta (sistólica)</string>
     <string name="dialog_baja_titulo">Introduce a Baixa (diastólica)</string>
+    <string name="dialog_pulso_titulo">Introduce o Pulso (ppm)</string>
     <string name="pulsa_para_anadir">Preme para engadir</string>
     <string name="recuerdaesperar">Lembra agardar 5 minutos en repouso antes de tomar a medida.</string>
     <string name="guardar">Gardar</string>
