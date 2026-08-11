@@ -6,20 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fxn.mitension.data.Medicion
 import com.fxn.mitension.data.MedicionRepository
-import com.fxn.mitension.util.PeriodoDelDia
 import com.fxn.mitension.util.obtenerPeriodoActual
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import com.fxn.mitension.util.obtenerRangoTimestamps
 import com.fxn.mitension.util.obtenerTiempoRestanteParaSiguientePeriodo
-
-data class MedicionUiState(
-    val sistolica: String = "",
-    val diastolica: String = "",
-    val periodo: PeriodoDelDia = obtenerPeriodoActual(),
-    val numeroMedicion: Int = 1 // De 1 a 3
-)
 
 class MedicionViewModel(private val repository: MedicionRepository) : ViewModel() {
 
@@ -57,12 +49,19 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
         }
     }
 
+    fun onPulsoChanged(valor: String) {
+        if (valor.length <= 3 && valor.all { it.isDigit() }) {
+            _uiState.value = _uiState.value.copy(pulso = valor)
+        }
+    }
+
     fun guardarMedicion(mensajeErrorCampos: String, mensajeErrorPeriodoLleno: String, mensajeExito: String) {
         viewModelScope.launch {
             val sistolica = _uiState.value.sistolica
             val diastolica = _uiState.value.diastolica
+            val pulso = _uiState.value.pulso
 
-            // Validación 1: Campos vacíos
+            // Validación 1: Campos vacíos (Sistólica y Diastólica son obligatorios, Pulso es opcional)
             if (_uiState.value.sistolica.isBlank() || _uiState.value.diastolica.isBlank()) {
                 _evento.emit(UiEvento.MostrarMensaje(mensajeErrorCampos))
                 return@launch
@@ -82,6 +81,7 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
                 val nuevaMedicion = Medicion(
                     sistolica = sistolica.toInt(),
                     diastolica = diastolica.toInt(),
+                    pulso = pulso.toIntOrNull(),
                     // El timestamp se genera por defecto en el constructor de Medicion
                 )
 
@@ -91,9 +91,8 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
 
             } catch (e: NumberFormatException) {
                 // Esto es un seguro por si algo muy raro pasa y el texto no es un número
-                _evento.emit(UiEvento.MostrarMensaje("Error: Invalid numeric value."))
+                _evento.emit(UiEvento.MostrarMensaje("Error: Invalid numeric value. " + e.message))
             }
-            println("Guardado: Sistólica=${sistolica}, Diastólica=${diastolica}")
         }
     }
 
@@ -103,6 +102,7 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
         _uiState.value = _uiState.value.copy(
             sistolica = "",
             diastolica = "",
+            pulso = "",
             numeroMedicion = nuevoNumero
         )
     }

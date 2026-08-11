@@ -139,20 +139,34 @@ fun MedicionItem(medicion: Medicion) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(id = R.string.tension_alta_label_corta) + ": ${medicion.sistolica}",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = stringResource(id = R.string.tension_baja_label_corta) + ": ${medicion.diastolica}",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
             )
+            
+            if (medicion.pulso != null) {
+                Text(
+                    text = stringResource(id = R.string.pulso_label_corta) + ": ${medicion.pulso}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF4CAF50),
+                    fontWeight = FontWeight.Medium
+                )
+            }
+            
             Text(
                 text = hora,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Light
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Light,
+                color = Color.Gray
             )
         }
     }

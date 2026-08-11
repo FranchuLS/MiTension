@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -29,6 +30,8 @@ fun TensionCard(
     valor: String,
     colorAcento: Color,
     iconRes: Int? = null,
+    unidad: String = "mmHg",
+    paddingVertical: Dp = 24.dp,
     onClick: () -> Unit
 ) {
     Card(
@@ -40,7 +43,7 @@ fun TensionCard(
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(vertical = paddingVertical, horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -51,8 +54,8 @@ fun TensionCard(
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = null,
-                        modifier = Modifier.size(48.dp),
-                        tint = colorAcento // Usamos el color coral/azul para que combine
+                        modifier = Modifier.size(if (paddingVertical < 24.dp) 32.dp else 48.dp),
+                        tint = colorAcento
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
@@ -66,17 +69,20 @@ fun TensionCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(start = 60.dp)
+                modifier = Modifier.padding(start = if (iconRes != null) 40.dp else 0.dp)
             ) {
                 Text(
                     text = if (valor.isEmpty()) "---" else valor,
-                    style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.ExtraBold),
+                    style = if (paddingVertical < 24.dp) 
+                        MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.ExtraBold)
+                    else 
+                        MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.ExtraBold),
                     color = colorAcento
                 )
 
                 Text(
-                    "  mmHg",
-                    modifier = Modifier.padding(top = 20.dp),
+                    "  $unidad",
+                    modifier = Modifier.padding(top = if (paddingVertical < 24.dp) 10.dp else 20.dp),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color.LightGray
                 )
