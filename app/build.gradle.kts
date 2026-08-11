@@ -1,17 +1,18 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.fxn.mitension"
-    compileSdk = 36
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.fxn.mitension"
-        minSdk = 31
-        targetSdk = 36
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
 
         versionCode = 1
         versionName = "1.0"
@@ -25,7 +26,7 @@ android {
     signingConfigs {
         create("release") {
             val keystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
-            val keystorePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            val keystorePassword = System.getenv("ANDROID_KEY_PASSWORD")
             val keyAlias = System.getenv("ANDROID_KEY_ALIAS")
             val keyPassword = System.getenv("ANDROID_KEY_PASSWORD")
 
@@ -65,11 +66,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        // Versión del compilador de Compose compatible con Kotlin 1.9.23
-        kotlinCompilerExtensionVersion = "1.5.11"
     }
 
     packaging {
