@@ -55,10 +55,10 @@ class DiaDetalleViewModelTest {
     fun `uiState agrupa las mediciones por período correctamente`() = runTest(testDispatcher) { // <-- CAMBIO 1
         // GIVEN: Una lista de mediciones en diferentes períodos
         val medicionesDePrueba = listOf(
-            Medicion(1, 120, 80, obtenerTimestamp(9, 0)),  // Mañana
-            Medicion(2, 130, 85, obtenerTimestamp(15, 0)), // Tarde
-            Medicion(3, 135, 88, obtenerTimestamp(16, 0)), // Tarde
-            Medicion(4, 140, 90, obtenerTimestamp(21, 0))  // Noche
+            Medicion(1, 120, 80, 75, obtenerTimestamp(9, 0)),  // Mañana
+            Medicion(2, 130, 85, 75, obtenerTimestamp(15, 0)), // Tarde
+            Medicion(3, 135, 88, 75, obtenerTimestamp(16, 0)), // Tarde
+            Medicion(4, 140, 90, 75, obtenerTimestamp(21, 0))  // Noche
         )
         every { repository.obtenerMedicionesEnRango(any(), any()) } returns flowOf(medicionesDePrueba)
 
