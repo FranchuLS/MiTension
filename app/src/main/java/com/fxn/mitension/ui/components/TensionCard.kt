@@ -54,7 +54,7 @@ fun TensionCard(
                     Icon(
                         painter = painterResource(id = iconRes),
                         contentDescription = null,
-                        modifier = Modifier.size(if (paddingVertical < 24.dp) 32.dp else 48.dp),
+                        modifier = Modifier.size(if (paddingVertical < 18.dp) 32.dp else 48.dp),
                         tint = colorAcento
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -73,7 +73,7 @@ fun TensionCard(
             ) {
                 Text(
                     text = if (valor.isEmpty()) "---" else valor,
-                    style = if (paddingVertical < 24.dp) 
+                    style = if (paddingVertical < 18.dp) 
                         MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.ExtraBold)
                     else 
                         MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.ExtraBold),
@@ -82,7 +82,7 @@ fun TensionCard(
 
                 Text(
                     "  $unidad",
-                    modifier = Modifier.padding(top = if (paddingVertical < 24.dp) 10.dp else 20.dp),
+                    modifier = Modifier.padding(top = if (paddingVertical < 18.dp) 10.dp else 20.dp),
                     style = MaterialTheme.typography.labelLarge,
                     color = Color.LightGray
                 )

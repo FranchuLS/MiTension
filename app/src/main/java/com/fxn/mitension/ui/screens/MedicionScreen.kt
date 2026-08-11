@@ -3,7 +3,9 @@ package com.fxn.mitension.ui.screens
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
@@ -34,17 +36,11 @@ import kotlinx.coroutines.flow.collectLatest
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
-    // Obtener el nuevo string de error
     val errorViewModel = stringResource(id = R.string.error_clase_view_model_desconocida)
-
     val context = LocalContext.current
-    // Creamos instancias de la DB, DAO, Repo y la Factoría.
-    // Usamos 'remember' para que no se creen en cada recomposición.
     val medicionDao = remember { AppDatabase.getDatabase(context).medicionDao() }
     val repository = remember { MedicionRepository(medicionDao) }
     val factory = remember { MedicionViewModelFactory(repository, errorViewModel) }
-
-    // Pasamos la factoría al composable 'viewModel'
     val viewModel: MedicionViewModel = viewModel(factory = factory)
 
     val uiState by viewModel.uiState
@@ -52,7 +48,6 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     var mostrarPopupDiastolica by remember { mutableStateOf(false) }
     var mostrarPopupPulso by remember { mutableStateOf(false) }
 
-    // Añadimos el nuevo mensaje de éxito
     val mensajeErrorCampos = stringResource(id = R.string.error_campos_obligatorios)
     val mensajeErrorPeriodoLleno = stringResource(id = R.string.error_periodo_lleno)
     val mensajeExito = stringResource(id = R.string.guardado_con_exito)
@@ -69,18 +64,16 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
         stringResource(id = R.string.titulo_medicion, uiState.numeroMedicion)
     }
 
-    // Determinamos qué icono usar según el periodo
     val iconoPeriodo = when (uiState.periodo) {
         PeriodoDelDia.MAÑANA -> R.drawable.ic_sunrise
         PeriodoDelDia.TARDE -> R.drawable.ic_sun
         PeriodoDelDia.NOCHE -> R.drawable.ic_moon
     }
 
-    // Color del icono (opcional: puedes variarlo según el periodo)
     val colorIcono = when (uiState.periodo) {
-        PeriodoDelDia.MAÑANA -> Color(0xFFFF7043) // Naranja atardecer/amanecer
-        PeriodoDelDia.TARDE -> Color(0xFFFFD966)  // Amarillo sol
-        PeriodoDelDia.NOCHE -> Color(0xFF8EACCD)  // Azul luna
+        PeriodoDelDia.MAÑANA -> Color(0xFFFF7043)
+        PeriodoDelDia.TARDE -> Color(0xFFFFD966)
+        PeriodoDelDia.NOCHE -> Color(0xFF8EACCD)
     }
 
     LaunchedEffect(key1 = true) {
@@ -89,7 +82,6 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 is MedicionViewModel.UiEvento.MostrarMensaje -> {
                     Toast.makeText(context, evento.mensaje, Toast.LENGTH_LONG).show()
                 }
-
                 is MedicionViewModel.UiEvento.GuardadoConExito -> {
                     Toast.makeText(context, evento.mensaje, Toast.LENGTH_SHORT).show()
                     viewModel.onGuardadoExitoso()
@@ -97,9 +89,9 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
             }
         }
     }
+
     Scaffold(
-        containerColor = Color(0xFFFFFBF1), // Fondo Crema
-        //Botones parte inferior.
+        containerColor = Color(0xFFFFFBF1),
         bottomBar = {
             BottomAppBar {
                 Row(
@@ -110,11 +102,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 ) {
                     Button(
                         onClick = {
-                            viewModel.guardarMedicion(
-                                mensajeErrorCampos,
-                                mensajeErrorPeriodoLleno,
-                                mensajeExito
-                            )
+                            viewModel.guardarMedicion(mensajeErrorCampos, mensajeErrorPeriodoLleno, mensajeExito)
                         },
                         modifier = Modifier
                             .weight(1f)
@@ -133,8 +121,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
                     ) {
-                        Text(
-                            stringResource(id = R.string.ver_calendario), fontWeight = FontWeight.Bold)
+                        Text(stringResource(id = R.string.ver_calendario), fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -144,7 +131,8 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color(0xFFFFFBF1)),
+                .background(Color(0xFFFFFBF1))
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Surface(
@@ -155,45 +143,35 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 24.dp), // Padding inferior de la cabecera
+                        .padding(bottom = 16.dp), // Reducido de 24
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(
-                                top = 16.dp,
-                                bottom = 24.dp,
-                                start = 20.dp,
-                                end = 16.dp
-                            ), // Espaciado elegante
+                            .padding(top = 12.dp, bottom = 12.dp, start = 20.dp, end = 16.dp), // Reducido de 16/24
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
                             painter = painterResource(id = iconoPeriodo),
                             contentDescription = null,
-                            modifier = Modifier.size(50.dp),
+                            modifier = Modifier.size(44.dp), // Un poco más pequeño
                             tint = colorIcono
                         )
-
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                        ) {
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = tituloPeriodo,
-                                style = MaterialTheme.typography.headlineLarge.copy(
+                                style = MaterialTheme.typography.headlineMedium.copy( // De Large a Medium
                                     fontWeight = FontWeight.Bold,
                                     letterSpacing = 0.8.sp
                                 ),
                                 color = Color(0xFF4A4A4A)
                             )
-
                             Text(
                                 text = titulomedicion,
-                                style = MaterialTheme.typography.titleLarge.copy(
+                                style = MaterialTheme.typography.titleMedium.copy( // De Large a Medium
                                     fontWeight = FontWeight.Normal,
                                     letterSpacing = 0.6.sp
                                 ),
@@ -201,31 +179,22 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                             )
                         }
                     }
-                    // Tarjeta de consejo
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 0.dp),
+                            .padding(horizontal = 20.dp),
                         shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFDDE6ED).copy(
-                                alpha = 0.4f
-                            )
-                        )
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFDDE6ED).copy(alpha = 0.4f))
                     ) {
                         Row(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(12.dp), // Reducido de 16
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                Icons.Default.Info,
-                                contentDescription = null,
-                                tint = Color(0xFF8EACCD)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
+                            Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF8EACCD), modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = stringResource(id = R.string.recuerdaesperar),
-                                style = MaterialTheme.typography.bodyMedium,
+                                style = MaterialTheme.typography.bodySmall, // De Medium a Small
                                 color = Color(0xFF505050)
                             )
                         }
@@ -236,10 +205,9 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
             Column(
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
-                    .padding(top = 24.dp),
+                    .padding(top = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Tarjetas de tensión (Sistólica y Diastólica)
                 TensionCard(
                     label = stringResource(id = R.string.tension_alta_label),
                     valor = uiState.sistolica,
@@ -248,7 +216,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     onClick = { mostrarPopupSistolica = true }
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(14.dp)) // Espacio equilibrado
 
                 TensionCard(
                     label = stringResource(id = R.string.tension_baja_label),
@@ -258,20 +226,17 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     onClick = { mostrarPopupDiastolica = true }
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                // Nueva tarjeta para el Pulso (más bajita)
                 TensionCard(
                     label = stringResource(id = R.string.pulso_label),
                     valor = uiState.pulso,
-                    colorAcento = Color(0xFF4CAF50), // Un verde suave para el pulso
-                    iconRes = R.drawable.ic_blood_drop, // Podrías usar otro icono si tienes uno de corazón
+                    colorAcento = Color(0xFF4CAF50),
+                    iconRes = R.drawable.ic_blood_drop,
                     unidad = "ppm",
-                    paddingVertical = 12.dp, // Más bajita
+                    paddingVertical = 20.dp, // Suficiente para que el número se vea grande
                     onClick = { mostrarPopupPulso = true }
                 )
-
-                Spacer(modifier = Modifier.weight(1f))
             }
         }
     }
