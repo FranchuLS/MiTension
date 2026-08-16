@@ -33,10 +33,8 @@ import com.fxn.mitension.ui.viewmodel.CalendarioViewModelFactory
 import com.fxn.mitension.util.EstadoTension
 import com.fxn.mitension.util.clasificarTension
 import com.fxn.mitension.util.obtenerColorPorEstado
-import java.time.DayOfWeek
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.roundToInt
 
