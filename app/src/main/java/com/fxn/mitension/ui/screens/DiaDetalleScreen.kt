@@ -46,8 +46,8 @@ fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
         },
         bottomBar = {
             BottomAppBar(
-                modifier = Modifier.height(70.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 5.dp)
+                modifier = Modifier.navigationBarsPadding().height(64.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
