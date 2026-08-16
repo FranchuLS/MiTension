@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -93,12 +94,14 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
     Scaffold(
         containerColor = Color(0xFFFFFBF1),
         bottomBar = {
-            BottomAppBar {
+            BottomAppBar(
+                modifier = Modifier.height(70.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 5.dp)
+            ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
                         onClick = {
@@ -106,7 +109,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                         },
                         modifier = Modifier
                             .weight(1f)
-                            .height(40.dp),
+                            .height(45.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
                     ) {
@@ -117,7 +120,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                         onClick = onNavigateToCalendario,
                         modifier = Modifier
                             .weight(1f)
-                            .height(40.dp),
+                            .height(48.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
                     ) {
@@ -143,27 +146,27 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 16.dp), // Reducido de 24
+                        .padding(bottom = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp, bottom = 12.dp, start = 20.dp, end = 16.dp), // Reducido de 16/24
+                            .padding(top = 12.dp, bottom = 12.dp, start = 20.dp, end = 16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
                     ) {
                         Icon(
                             painter = painterResource(id = iconoPeriodo),
                             contentDescription = null,
-                            modifier = Modifier.size(44.dp), // Un poco más pequeño
+                            modifier = Modifier.size(44.dp),
                             tint = colorIcono
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Text(
                                 text = tituloPeriodo,
-                                style = MaterialTheme.typography.headlineMedium.copy( // De Large a Medium
+                                style = MaterialTheme.typography.headlineMedium.copy(
                                     fontWeight = FontWeight.Bold,
                                     letterSpacing = 0.8.sp
                                 ),
@@ -171,7 +174,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                             )
                             Text(
                                 text = titulomedicion,
-                                style = MaterialTheme.typography.titleMedium.copy( // De Large a Medium
+                                style = MaterialTheme.typography.titleMedium.copy(
                                     fontWeight = FontWeight.Normal,
                                     letterSpacing = 0.6.sp
                                 ),
@@ -187,14 +190,14 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFDDE6ED).copy(alpha = 0.4f))
                     ) {
                         Row(
-                            modifier = Modifier.padding(12.dp), // Reducido de 16
+                            modifier = Modifier.padding(12.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(Icons.Default.Info, contentDescription = null, tint = Color(0xFF8EACCD), modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = stringResource(id = R.string.recuerdaesperar),
-                                style = MaterialTheme.typography.bodySmall, // De Medium a Small
+                                style = MaterialTheme.typography.bodySmall,
                                 color = Color(0xFF505050)
                             )
                         }
@@ -208,6 +211,7 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     .padding(top = 16.dp, bottom = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Tarjeta de Sistólica
                 TensionCard(
                     label = stringResource(id = R.string.tension_alta_label),
                     valor = uiState.sistolica,
@@ -216,8 +220,9 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
                     onClick = { mostrarPopupSistolica = true }
                 )
 
-                Spacer(modifier = Modifier.height(14.dp)) // Espacio equilibrado
+                Spacer(modifier = Modifier.height(14.dp))
 
+                // Tarjeta de Diastólica
                 TensionCard(
                     label = stringResource(id = R.string.tension_baja_label),
                     valor = uiState.diastolica,
@@ -228,13 +233,13 @@ fun MedicionScreen(onNavigateToCalendario: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(14.dp))
 
+                // Tarjeta de Pulso (Ahora con ic_heart y alineación estándar)
                 TensionCard(
                     label = stringResource(id = R.string.pulso_label),
                     valor = uiState.pulso,
                     colorAcento = Color(0xFF4CAF50),
-                    iconRes = R.drawable.ic_blood_drop,
+                    iconRes = R.drawable.ic_heart,
                     unidad = "ppm",
-                    paddingVertical = 20.dp, // Suficiente para que el número se vea grande
                     onClick = { mostrarPopupPulso = true }
                 )
             }

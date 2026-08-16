@@ -37,28 +37,25 @@ fun TablaResumenUltimosDias(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .heightIn(max = 280.dp), // Limitamos la altura para que no empuje todo, pero permitimos scroll
+            .heightIn(max = 280.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        // Contenedor con scroll horizontal
         Box(
             modifier = Modifier
                 .padding(8.dp)
                 .horizontalScroll(scrollStateHorizontal)
         ) {
             Column {
-                // CABECERA FIJA (Solo horizontal scroll)
                 Column(modifier = Modifier.background(Color.White)) {
-                    // Grupos: Mañana/Tarde | Noche
                     Row(
                         modifier = Modifier.background(Color(0xFFF5F5F5), RoundedCornerShape(8.dp)),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        CeldaHeader("", 60.dp) // Espacio para la fecha
+                        CeldaHeader("", 60.dp)
                         CeldaHeaderGroup(
-                            stringResource(id = R.string.periodo_manana) + "/" + stringResource(id = R.string.periodo_tarde),
+                            stringResource(id = R.string.periodo_manana),
                             150.dp,
                             Color(0xFFFF8A71).copy(alpha = 0.1f)
                         )
@@ -69,7 +66,6 @@ fun TablaResumenUltimosDias(
                         )
                     }
 
-                    // Columnas: Fecha | Sist | Diast | Pul | Sist | Diast | Pul
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         CeldaHeader("Fecha", 60.dp)
                         CeldaHeader(stringResource(id = R.string.tension_alta_label_corta), 50.dp)
@@ -82,7 +78,6 @@ fun TablaResumenUltimosDias(
                     Box(modifier = Modifier.width(360.dp).height(1.dp).background(Color.Gray.copy(alpha = 0.5f)))
                 }
 
-                // CUERPO SCROLLABLE (Vertical scroll)
                 Column(
                     modifier = Modifier.verticalScroll(scrollStateVertical)
                 ) {
@@ -93,12 +88,10 @@ fun TablaResumenUltimosDias(
                         ) {
                             CeldaDato(fila.fecha.format(formatter), 60.dp, FontWeight.Bold)
                             
-                            // Datos Mañana/Tarde
                             CeldaDato(fila.sistolicaManana?.toString() ?: "-", 50.dp, colorTexto = Color(0xFFFF8A71))
                             CeldaDato(fila.diastolicaManana?.toString() ?: "-", 50.dp, colorTexto = Color(0xFFFF8A71))
                             CeldaDato(fila.pulsoManana?.toString() ?: "-", 50.dp, colorTexto = Color(0xFF4CAF50))
 
-                            // Datos Noche
                             CeldaDato(fila.sistolicaNoche?.toString() ?: "-", 50.dp, colorTexto = Color(0xFF8EACCD))
                             CeldaDato(fila.diastolicaNoche?.toString() ?: "-", 50.dp, colorTexto = Color(0xFF8EACCD))
                             CeldaDato(fila.pulsoNoche?.toString() ?: "-", 50.dp, colorTexto = Color(0xFF4CAF50))

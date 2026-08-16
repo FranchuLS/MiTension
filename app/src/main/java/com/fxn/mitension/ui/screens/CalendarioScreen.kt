@@ -87,19 +87,27 @@ fun CalendarioScreen(
             )
         },
         bottomBar = {
-            BottomAppBar {
+            BottomAppBar(
+                modifier = Modifier.height(70.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 5.dp)
+            ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
                         onClick = onNavigateToMedicion,
                         modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .height(40.dp),
-                        shape = RoundedCornerShape(16.dp)
+                            .weight(1f)
+                            .height(45.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
                     ) {
-                        Text(stringResource(id = R.string.anadir_nuevo_registro))
+                        Text(
+                            stringResource(id = R.string.anadir_nuevo_registro),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -109,7 +117,7 @@ fun CalendarioScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState()) // Añadimos scroll a toda la pantalla
+                .verticalScroll(rememberScrollState())
         ) {
             CalendarioHeader(
                 anioMes = uiState.anioMes,
@@ -124,16 +132,7 @@ fun CalendarioScreen(
                 }
             )
             
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Título para la tabla resumen
-            Text(
-                text = stringResource(id = R.string.resumen_ultimos_dias),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
-            )
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Nueva Tabla Resumen
             TablaResumenUltimosDias(
@@ -189,7 +188,7 @@ fun CalendarioGrid(
 ) {
     val diasEnMes = anioMes.lengthOfMonth()
     val primerDiaDelMes = anioMes.atDay(1).dayOfWeek
-    val offset = primerDiaDelMes.value - 1 // Ajuste para que Lunes sea 0
+    val offset = primerDiaDelMes.value - 1
 
     Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row {
@@ -264,7 +263,6 @@ fun CeldaDiaCalendario(
                     .padding(horizontal = 4.dp, vertical = 1.dp),
                 horizontalArrangement = Arrangement.spacedBy(1.dp)
             ) {
-                // Indicadores de color Mañana, Tarde, Noche
                 IndicadorColor(resumen?.mediaSistolicaManana, resumen?.mediaDiastolicaManana)
                 IndicadorColor(resumen?.mediaSistolicaTarde, resumen?.mediaDiastolicaTarde)
                 IndicadorColor(resumen?.mediaSistolicaNoche, resumen?.mediaDiastolicaNoche)
