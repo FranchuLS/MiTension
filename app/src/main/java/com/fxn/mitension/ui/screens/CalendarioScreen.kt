@@ -3,8 +3,10 @@ package com.fxn.mitension.ui.screens
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -15,22 +17,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.fxn.mitension.ui.viewmodel.CalendarioViewModel
-import java.time.DayOfWeek
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fxn.mitension.R
 import com.fxn.mitension.data.AppDatabase
 import com.fxn.mitension.data.MedicionRepository
 import com.fxn.mitension.data.ResumenDiario
+import com.fxn.mitension.ui.components.TablaResumenUltimosDias
+import com.fxn.mitension.ui.viewmodel.CalendarioViewModel
 import com.fxn.mitension.ui.viewmodel.CalendarioViewModelFactory
 import com.fxn.mitension.util.EstadoTension
 import com.fxn.mitension.util.clasificarTension
 import com.fxn.mitension.util.obtenerColorPorEstado
+import java.time.DayOfWeek
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -44,19 +47,13 @@ fun CalendarioScreen(
     onNavigateToDiaDetalle: (Int, Int, Int) -> Unit,
 ) {
     val context = LocalContext.current
-    // Usamos 'remember' para que no se cree en cada recomposición.
     val repository = remember {
         MedicionRepository(AppDatabase.getDatabase(context).medicionDao())
     }
-
-    // Creamos la nueva factoría, pasándole el repositorio.
     val factory = remember {
         CalendarioViewModelFactory(repository)
     }
-
-    // Pasamos la factoría al composable 'viewModel' para que cree la instancia.
     val viewModel: CalendarioViewModel = viewModel(factory = factory)
-
     val uiState by viewModel.uiState.collectAsState()
 
     var menuVisible by remember { mutableStateOf(false) }
@@ -68,14 +65,12 @@ fun CalendarioScreen(
             TopAppBar(
                 title = { Text(stringResource(id = R.string.titulo_calendario)) },
                 actions = {
-                    // Botón del menú de la leyenda
                     IconButton(onClick = { menuVisible = true }) {
                         Icon(
                             imageVector = Icons.Default.MoreVert,
                             contentDescription = stringResource(id = R.string.menu_descripcion)
                         )
                     }
-                    // Menú desplegable
                     DropdownMenu(
                         expanded = menuVisible,
                         onDismissRequest = { menuVisible = false }
@@ -114,6 +109,7 @@ fun CalendarioScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState()) // Añadimos scroll a toda la pantalla
         ) {
             CalendarioHeader(
                 anioMes = uiState.anioMes,
@@ -127,9 +123,26 @@ fun CalendarioScreen(
                     onNavigateToDiaDetalle(uiState.anioMes.year, uiState.anioMes.monthValue, dia)
                 }
             )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            // Título para la tabla resumen
+            Text(
+                text = stringResource(id = R.string.resumen_ultimos_dias),
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray
+            )
+
+            // Nueva Tabla Resumen
+            TablaResumenUltimosDias(
+                filas = uiState.resumenUltimosDias,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
         }
     }
-    // Diálogo de leyenda
+    
     if (dialogoLeyendaVisible) {
         DialogoLeyenda(onDismiss = { dialogoLeyendaVisible = false })
     }
@@ -176,47 +189,45 @@ fun CalendarioGrid(
 ) {
     val diasEnMes = anioMes.lengthOfMonth()
     val primerDiaDelMes = anioMes.atDay(1).dayOfWeek
-    val offset = primerDiaDelMes.value
+    val offset = primerDiaDelMes.value - 1 // Ajuste para que Lunes sea 0
 
-    Column {
-        // Cabecera con los días de la semana
+    Column(modifier = Modifier.padding(horizontal = 8.dp)) {
         Row {
-            for (i in 0..6) {
-                val dia = DayOfWeek.values()[(i + 6) % 7] // L M X J V S D
+            val diasSemana = listOf("L", "M", "X", "J", "V", "S", "D")
+            diasSemana.forEach { dia ->
                 Text(
-                    text = dia.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                    text = dia,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.labelMedium
                 )
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Días del calendario
+        var diaActual = 1
         for (semana in 0..5) {
             Row {
-                for (diaSemana in 1..7) {
-                    val diaMes = (semana * 7 + diaSemana) - offset
-                    if (diaMes in 1..diasEnMes) {
+                for (diaSemana in 0..6) {
+                    val indice = semana * 7 + diaSemana
+                    if (indice >= offset && diaActual <= diasEnMes) {
+                        val dia = diaActual
                         CeldaDiaCalendario(
-                            dia = diaMes,
-                            resumen = resumenMensual[diaMes],
-                            onClick = { onDiaClick(diaMes) },
+                            dia = dia,
+                            resumen = resumenMensual[dia],
+                            onClick = { onDiaClick(dia) },
                             modifier = Modifier
                                 .weight(1f)
-                                .aspectRatio(1f)
+                                .aspectRatio(1.2f)
                         )
+                        diaActual++
                     } else {
-                        // Celda vacía para los días fuera del mes
-                        Spacer(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                        )
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }
+            if (diaActual > diasEnMes) break
         }
     }
 }
@@ -229,144 +240,85 @@ fun CeldaDiaCalendario(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier
+            .padding(2.dp)
+            .background(Color.White, RoundedCornerShape(8.dp))
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Número del día
             Text(
                 text = dia.toString(),
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 4.dp)
             )
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Fila para los indicadores de color
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp)
-                    .padding(horizontal = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    .height(6.dp)
+                    .padding(horizontal = 4.dp, vertical = 1.dp),
+                horizontalArrangement = Arrangement.spacedBy(1.dp)
             ) {
-                // Mañana
-                val colorManana = resumen?.mediaSistolicaManana?.let { sist ->
-                    resumen.mediaDiastolicaManana?.let { diast ->
-                        obtenerColorPorEstado(
-                            clasificarTension(
-                                sist.roundToInt(),
-                                diast.roundToInt()
-                            )
-                        )
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .background(colorManana ?: Color.Transparent)
-                )
-
-                // Tarde
-                val colorTarde = resumen?.mediaSistolicaTarde?.let { sist ->
-                    resumen.mediaDiastolicaTarde?.let { diast ->
-                        obtenerColorPorEstado(
-                            clasificarTension(
-                                sist.roundToInt(),
-                                diast.roundToInt()
-                            )
-                        )
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .background(colorTarde ?: Color.Transparent)
-                )
-
-                // Noche
-                val colorNoche = resumen?.mediaSistolicaNoche?.let { sist ->
-                    resumen.mediaDiastolicaNoche?.let { diast ->
-                        obtenerColorPorEstado(
-                            clasificarTension(
-                                sist.roundToInt(),
-                                diast.roundToInt()
-                            )
-                        )
-                    }
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .background(colorNoche ?: Color.Transparent)
-                )
+                // Indicadores de color Mañana, Tarde, Noche
+                IndicadorColor(resumen?.mediaSistolicaManana, resumen?.mediaDiastolicaManana)
+                IndicadorColor(resumen?.mediaSistolicaTarde, resumen?.mediaDiastolicaTarde)
+                IndicadorColor(resumen?.mediaSistolicaNoche, resumen?.mediaDiastolicaNoche)
             }
         }
     }
 }
 
 @Composable
+fun RowScope.IndicadorColor(sis: Double?, diast: Double?) {
+    val color = if (sis != null && diast != null) {
+        obtenerColorPorEstado(clasificarTension(sis.roundToInt(), diast.roundToInt()))
+    } else {
+        Color.Transparent
+    }
+    Box(
+        modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight()
+            .background(color)
+    )
+}
+
+@Composable
 fun DialogoLeyenda(onDismiss: () -> Unit) {
-    // Usamos las mismas funciones de la utilidad que creamos para obtener los colores
-    val colorBaja = obtenerColorPorEstado(estado = EstadoTension.BAJA)
-    val colorNormal = obtenerColorPorEstado(estado = EstadoTension.NORMAL)
-    val colorElevada = obtenerColorPorEstado(estado = EstadoTension.ELEVADA)
-    val colorAlta1 = obtenerColorPorEstado(estado = EstadoTension.ALTA_1)
-    val colorAlta2 = obtenerColorPorEstado(estado = EstadoTension.ALTA_2)
-    val colorCrisis = obtenerColorPorEstado(estado = EstadoTension.CRISIS_HIPERTENSIVA)
+    val colorBaja = obtenerColorPorEstado(EstadoTension.BAJA)
+    val colorNormal = obtenerColorPorEstado(EstadoTension.NORMAL)
+    val colorElevada = obtenerColorPorEstado(EstadoTension.ELEVADA)
+    val colorAlta1 = obtenerColorPorEstado(EstadoTension.ALTA_1)
+    val colorAlta2 = obtenerColorPorEstado(EstadoTension.ALTA_2)
+    val colorCrisis = obtenerColorPorEstado(EstadoTension.CRISIS_HIPERTENSIVA)
 
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.large
         ) {
-            Column(
-                modifier = Modifier.padding(24.dp)
-            ) {
+            Column(modifier = Modifier.padding(24.dp)) {
                 Text(
                     text = stringResource(id = R.string.leyenda_titulo),
                     style = MaterialTheme.typography.headlineSmall,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-
-                // Lista de leyendas
-                LeyendaItem(color = colorBaja, texto = stringResource(id = R.string.leyenda_baja))
-                LeyendaItem(
-                    color = colorNormal,
-                    texto = stringResource(id = R.string.leyenda_normal)
-                )
-                LeyendaItem(
-                    color = colorElevada,
-                    texto = stringResource(id = R.string.leyenda_elevada)
-                )
-                LeyendaItem(
-                    color = colorAlta1,
-                    texto = stringResource(id = R.string.leyenda_alta_1)
-                )
-                LeyendaItem(
-                    color = colorAlta2,
-                    texto = stringResource(id = R.string.leyenda_alta_2)
-                )
-                LeyendaItem(
-                    color = colorCrisis,
-                    texto = stringResource(id = R.string.leyenda_crisis)
-                )
-
+                LeyendaItem(colorBaja, stringResource(id = R.string.leyenda_baja))
+                LeyendaItem(colorNormal, stringResource(id = R.string.leyenda_normal))
+                LeyendaItem(colorElevada, stringResource(id = R.string.leyenda_elevada))
+                LeyendaItem(colorAlta1, stringResource(id = R.string.leyenda_alta_1))
+                LeyendaItem(colorAlta2, stringResource(id = R.string.leyenda_alta_2))
+                LeyendaItem(colorCrisis, stringResource(id = R.string.leyenda_crisis))
                 Spacer(modifier = Modifier.height(24.dp))
-
                 Button(
                     onClick = onDismiss,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(0.5f)
-                        .height(40.dp),
+                    modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(0.5f).height(40.dp),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(stringResource(id = R.string.cerrar))
@@ -378,15 +330,8 @@ fun DialogoLeyenda(onDismiss: () -> Unit) {
 
 @Composable
 fun LeyendaItem(color: Color, texto: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 4.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(20.dp)
-                .background(color, CircleShape)
-        )
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
+        Box(modifier = Modifier.size(20.dp).background(color, CircleShape))
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = texto, style = MaterialTheme.typography.bodyLarge)
     }

@@ -23,10 +23,17 @@ class MedicionRepository(private val medicionDao: MedicionDao) {
 
     /**
      * Obtiene un Flow con la lista de mediciones para un rango de tiempo.
-     * Ideal para observar los cambios de un día en tiempo real.
      */
     fun obtenerMedicionesEnRango(inicio: Long, fin: Long): Flow<List<Medicion>> {
-        return medicionDao.obtenerMedicionesPorDia(inicio, fin)
+        return medicionDao.obtenerMedicionesEnRango(inicio, fin)
+    }
+
+    /**
+     * Obtiene un Flow con la lista de mediciones para un día específico ordenadas por fecha DESC.
+     * Ideal para observar los cambios de un día en tiempo real.
+     */
+    fun obtenerMedicionesPorDia(inicioDelDia: Long, finDelDia: Long): Flow<List<Medicion>> {
+        return medicionDao.obtenerMedicionesPorDia(inicioDelDia, finDelDia)
     }
 
     /**

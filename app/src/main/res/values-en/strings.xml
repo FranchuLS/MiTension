@@ -29,7 +29,8 @@
     <string name="mes_siguiente">Next Month</string>
     <string name="titulo_mediciones_completas">You have completed the measurements for %1$s</string>
     <string name="titulo_calendario">My Blood Pressure Calendar</string>
-
+    <string name="resumen_ultimos_dias">Last 8 days</string>
+    <string name="col_fecha">Date</string>
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Both High and Low fields are required.</string>
     <string name="guardado_con_exito">Measurement saved successfully!</string>
