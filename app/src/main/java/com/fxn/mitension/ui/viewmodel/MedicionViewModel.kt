@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import com.fxn.mitension.util.obtenerRangoTimestamps
 import com.fxn.mitension.util.obtenerTiempoRestanteParaSiguientePeriodo
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class MedicionViewModel(private val repository: MedicionRepository) : ViewModel() {
 
@@ -32,12 +34,12 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
 
             _uiState.value = _uiState.value.copy(
                 periodo = periodoActual,
-                numeroMedicion = conteo + 1 // Si hay 0, estamos en la 1. Si hay 1, en la 2, etc.
+                numeroMedicion = conteo + 1
             )
         }
     }
+
     fun onSistolicaChanged(valor: String) {
-        // Permitimos solo números y hasta 3 dígitos
         if (valor.length <= 3 && valor.all { it.isDigit() }) {
             _uiState.value = _uiState.value.copy(sistolica = valor)
         }
@@ -61,43 +63,49 @@ class MedicionViewModel(private val repository: MedicionRepository) : ViewModel(
             val diastolica = _uiState.value.diastolica
             val pulso = _uiState.value.pulso
 
-            // Validación 1: Campos vacíos (Sistólica y Diastólica son obligatorios, Pulso es opcional)
             if (_uiState.value.sistolica.isBlank() || _uiState.value.diastolica.isBlank()) {
                 _evento.emit(UiEvento.MostrarMensaje(mensajeErrorCampos))
                 return@launch
             }
 
-            // Validación 2: Período lleno
             if (_uiState.value.numeroMedicion > 3) {
                 val tiempoRestante = obtenerTiempoRestanteParaSiguientePeriodo(_uiState.value.periodo)
-                // Formateamos el string del error con el tiempo restante
                 val mensajeFormateado = String.format(mensajeErrorPeriodoLleno, tiempoRestante)
                 _evento.emit(UiEvento.MostrarMensaje(mensajeFormateado))
                 return@launch
             }
 
             try {
-                // Creamos el objeto Medicion con los datos de la UI
+                // Lógica de "Día Lógico": Si se mide entre 00:00 y 04:00, se guarda como las 23:59 del día anterior.
+                val ahora = ZonedDateTime.now(ZoneId.systemDefault())
+                val timestampFinal = if (ahora.hour < 4) {
+                    ahora.minusDays(1)
+                        .withHour(23)
+                        .withMinute(59)
+                        .withSecond(59)
+                        .toInstant()
+                        .toEpochMilli()
+                } else {
+                    ahora.toInstant().toEpochMilli()
+                }
+
                 val nuevaMedicion = Medicion(
                     sistolica = sistolica.toInt(),
                     diastolica = diastolica.toInt(),
                     pulso = pulso.toIntOrNull(),
-                    // El timestamp se genera por defecto en el constructor de Medicion
+                    timestamp = timestampFinal
                 )
 
-                // Le pedimos al repositorio que inserte la nueva medición
                 repository.insertarMedicion(nuevaMedicion)
                 _evento.emit(UiEvento.GuardadoConExito(mensajeExito))
 
             } catch (e: NumberFormatException) {
-                // Esto es un seguro por si algo muy raro pasa y el texto no es un número
                 _evento.emit(UiEvento.MostrarMensaje("Error: Invalid numeric value. " + e.message))
             }
         }
     }
 
     fun onGuardadoExitoso() {
-        // Incrementamos el número de medición para la UI
         val nuevoNumero = _uiState.value.numeroMedicion + 1
         _uiState.value = _uiState.value.copy(
             sistolica = "",

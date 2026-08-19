@@ -29,6 +29,8 @@
     <string name="mes_siguiente">Mes Siguiente</string>
     <string name="titulo_mediciones_completas">Ya has completado las mediciones de %1$s</string>
     <string name="titulo_calendario">Calendario de Mi Tensión</string>
+    <string name="resumen_ultimos_dias">Últimos 8 días</string>
+    <string name="col_fecha">Fecha</string>
 
     <!--Mensajes-->
     <string name="error_campos_obligatorios">Ambos campos, Alta y Baja, son obligatorios.</string>

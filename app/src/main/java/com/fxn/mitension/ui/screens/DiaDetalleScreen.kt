@@ -32,13 +32,11 @@ import com.fxn.mitension.util.obtenerColorPorEstado
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
-    // Creamos el ViewModel usando su factoría
     val context = LocalContext.current
     val repository = remember { MedicionRepository(AppDatabase.getDatabase(context).medicionDao()) }
     val factory = remember { DiaDetalleViewModelFactory(repository) }
     val viewModel: DiaDetalleViewModel = viewModel(factory = factory)
 
-    // Recogemos el estado de la UI del ViewModel
     val uiState by viewModel.uiState.collectAsState()
     Scaffold(
         topBar = {
@@ -47,19 +45,27 @@ fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
             )
         },
         bottomBar = {
-            BottomAppBar {
+            BottomAppBar(
+                modifier = Modifier.navigationBarsPadding().height(64.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp)
+            ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
                         onClick = onNavigateBack,
                         modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .height(40.dp),
-                        shape = RoundedCornerShape(16.dp)
+                            .weight(1f)
+                            .height(45.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8A71))
                     ) {
-                        Text(stringResource(id = R.string.volver_al_calendario))
+                        Text(
+                            stringResource(id = R.string.volver_al_calendario),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
@@ -72,29 +78,21 @@ fun DiaDetalleScreen(onNavigateBack: () -> Unit) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Iteramos sobre los períodos que tienen mediciones
             PeriodoDelDia.entries.forEach { periodo ->
                 val medicionesDelPeriodo = uiState.medicionesAgrupadas[periodo]
                 if (!medicionesDelPeriodo.isNullOrEmpty()) {
-                    // Mostramos un encabezado para el período
                     item {
                         PeriodoHeader(periodo)
                     }
-                    // Mostramos cada medición del período
                     items(medicionesDelPeriodo) { medicion ->
                         MedicionItem(medicion)
                     }
-                    // Calculamos las medias a partir de la lista.
-                    // Usamos average() y lo redondeamos a Int.
                     val mediaSistolica = medicionesDelPeriodo.map { it.sistolica }.average().toInt()
                     val mediaDiastolica =
                         medicionesDelPeriodo.map { it.diastolica }.average().toInt()
-                    // Clasificamos la media para obtener su estado (Normal, Alta, etc.)
                     val estadoDeLaTension = clasificarTension(mediaSistolica, mediaDiastolica)
 
-                    //Mostramos la media del período
                     item {
-                        // Obtenemos el color correspondiente a ese estado.
                         val colorDeEstado = obtenerColorPorEstado(estado = estadoDeLaTension)
 
                         PeriodoMediaItem(
@@ -176,7 +174,6 @@ fun MedicionItem(medicion: Medicion) {
 fun PeriodoMediaItem(mediaSistolica: Int, mediaDiastolica: Int, colorFondo: Color) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        // Usamos el color que nos pasan como parámetro
         colors = CardDefaults.cardColors(
             containerColor = colorFondo
         ),
@@ -189,20 +186,16 @@ fun PeriodoMediaItem(mediaSistolica: Int, mediaDiastolica: Int, colorFondo: Colo
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Título para la media
             Text(
                 text = stringResource(id = R.string.media_label),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                // Hacemos el texto blanco para que contraste con los fondos oscuros
                 color = Color.White
             )
-            // Valor de la media
             Text(
                 text = "$mediaSistolica / $mediaDiastolica",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                // Texto blanco también aquí
                 color = Color.White
             )
         }
