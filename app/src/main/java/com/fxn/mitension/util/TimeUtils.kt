@@ -1,93 +1,69 @@
 package com.fxn.mitension.util
 
-import java.util.Calendar
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+
 /**
- * Devuelve un par de Longs (inicio, fin) con los timestamps para un período específico del día actual.
+ * Devuelve un par de Longs (inicio, fin) con los timestamps para un período específico.
+ * Implementa el "Día Lógico": el día comienza a las 04:00 AM.
  */
 fun obtenerRangoTimestamps(periodo: PeriodoDelDia): Pair<Long, Long> {
-    val inicio = Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }
-
-    when (periodo) {
+    val ahora = ZonedDateTime.now(ZoneId.systemDefault())
+    // Si son menos de las 4 AM, el "hoy" para el usuario es ayer
+    val fechaReferencia = if (ahora.hour < 4) ahora.minusDays(1).toLocalDate() else ahora.toLocalDate()
+    
+    return when (periodo) {
         PeriodoDelDia.MAÑANA -> {
-            inicio.add(Calendar.MINUTE, 1) // 00:01
-            val fin = (inicio.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, 12)
-                set(Calendar.MINUTE, 30)
-            }
-            return Pair(inicio.timeInMillis, fin.timeInMillis)
+            val inicio = fechaReferencia.atTime(4, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val fin = fechaReferencia.atTime(12, 30).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            Pair(inicio, fin)
         }
         PeriodoDelDia.TARDE -> {
-            inicio.set(Calendar.HOUR_OF_DAY, 12)
-            inicio.set(Calendar.MINUTE, 31) // 12:31
-            val fin = (inicio.clone() as Calendar).apply {
-                set(Calendar.HOUR_OF_DAY, 19)
-                set(Calendar.MINUTE, 0)
-            }
-            return Pair(inicio.timeInMillis, fin.timeInMillis)
+            val inicio = fechaReferencia.atTime(12, 31).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val fin = fechaReferencia.atTime(19, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            Pair(inicio, fin)
         }
         PeriodoDelDia.NOCHE -> {
-            inicio.set(Calendar.HOUR_OF_DAY, 19)
-            inicio.set(Calendar.MINUTE, 1) // 19:01
-            val fin = (inicio.clone() as Calendar).apply {
-                add(Calendar.DAY_OF_YEAR, 1)
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 0)
-            }
-            return Pair(inicio.timeInMillis, fin.timeInMillis)
+            val inicio = fechaReferencia.atTime(19, 1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val fin = fechaReferencia.plusDays(1).atTime(3, 59, 59).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            Pair(inicio, fin)
         }
     }
 }
 
 /**
- * Calcula el tiempo restante hasta el inicio del próximo período y lo formatea como un string.
+ * Calcula el tiempo restante hasta el inicio del próximo período.
  */
 fun obtenerTiempoRestanteParaSiguientePeriodo(periodoActual: PeriodoDelDia): String {
-    val ahora = System.currentTimeMillis()
-    val proximoPeriodo = when (periodoActual) {
+    val ahora = Instant.now().toEpochMilli()
+    val proximoTimestamp = when (periodoActual) {
         PeriodoDelDia.MAÑANA -> obtenerRangoTimestamps(PeriodoDelDia.TARDE).first
         PeriodoDelDia.TARDE -> obtenerRangoTimestamps(PeriodoDelDia.NOCHE).first
         PeriodoDelDia.NOCHE -> {
-            // Es el inicio de la mañana del día siguiente
-            val mananaSiguiente = Calendar.getInstance().apply {
-                add(Calendar.DAY_OF_YEAR, 1)
-                set(Calendar.HOUR_OF_DAY, 0)
-                set(Calendar.MINUTE, 1)
-                set(Calendar.SECOND, 0)
-            }
-            mananaSiguiente.timeInMillis
+            val zdt = ZonedDateTime.now(ZoneId.systemDefault())
+            val fechaBase = if (zdt.hour >= 4) zdt.plusDays(1).toLocalDate() else zdt.toLocalDate()
+            fechaBase.atTime(4, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         }
     }
 
-    val diff = proximoPeriodo - ahora
+    val diff = proximoTimestamp - ahora
     if (diff <= 0) return "un momento"
-
-    val horas = diff / (1000 * 60 * 60)
-    val minutos = (diff % (1000 * 60 * 60)) / (1000 * 60)
-
-    return when {
-        horas > 0 -> "${horas}h y ${minutos}m"
-        else -> "${minutos}m"
-    }
+    val horas = diff / 3600000
+    val minutos = (diff % 3600000) / 60000
+    return if (horas > 0) "${horas}h y ${minutos}m" else "${minutos}m"
 }
 
-
 /**
- * Devuelve el Período del Día para un timestamp específico.
+ * Devuelve el Período del Día para un timestamp basándose en el "Día Lógico" (inicio 04:00 AM).
  */
 fun obtenerPeriodoParaTimestamp(timestamp: Long): PeriodoDelDia {
-    val calendario = Calendar.getInstance().apply { timeInMillis = timestamp }
-    val hora = calendario.get(Calendar.HOUR_OF_DAY)
-    val minuto = calendario.get(Calendar.MINUTE)
-    val tiempoEnMinutos = hora * 60 + minuto
+    val zdt = Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())
+    val mins = zdt.hour * 60 + zdt.minute
 
     return when {
-        tiempoEnMinutos in 1..750 -> PeriodoDelDia.MAÑANA
-        tiempoEnMinutos in 751..1140 -> PeriodoDelDia.TARDE
-        else -> PeriodoDelDia.NOCHE
+        mins in 240..750 -> PeriodoDelDia.MAÑANA  // 04:00 - 12:30
+        mins in 751..1140 -> PeriodoDelDia.TARDE // 12:31 - 19:00
+        else -> PeriodoDelDia.NOCHE              // 19:01 - 03:59 (del día siguiente)
     }
 }
